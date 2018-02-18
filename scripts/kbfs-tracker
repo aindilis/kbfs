@@ -1,0 +1,158 @@
+#!/usr/bin/perl -w
+
+# this script is not finished
+
+# index a file into the KBFS system while asserting properties about it
+
+use BOSS::Config;
+use KBFS::Tracker;
+use KBS2::ImportExport;
+use KBS2::Util;
+use PerlLib::SwissArmyKnife;
+
+use Data::Dumper;
+use DateTime;
+use Digest::MD5;
+use File::Stat;
+
+$specification = q(
+	-x <context>		In this context
+
+	-a <exprs>...		Assert the expression about subsequent Files
+	-b <exprs>...		Assert the expression about subsequent FileClasses
+
+	-c			View assertions about subsequent Files
+	-d			View assertions about subsequent FileClasses
+
+	-f <files>...		About these Files
+);
+
+my $config =
+  BOSS::Config->new
+  (Spec => $specification);
+my $conf = $config->CLIConfig;
+
+my $ie = KBS2::ImportExport->new();
+my $tracker = KBFS::Tracker->new();
+
+Execute();
+
+sub Execute {
+  my ($self,%args) = @_;
+  my $context = $conf->{'-x'} || "Org::FRDCSA::KBFS::Tmp";
+  if ($conf->{'-a'}) {
+    my @expressions;
+    foreach my $expr (@{$conf->{'-a'}}) {
+      my $res = $ie->Convert
+	(
+	 InputType => "Emacs String",
+	 OutputType => "Interlingua",
+	 Input => $expr,
+	);
+      die "Assertion failed: <$expr>\n" unless $res->{Success};
+      push @expressions, $res->{Output}->[0];
+    }
+    foreach my $file (@{$conf->{'-f'}}) {
+      $tracker->AssertStatements
+	(
+	 Class => 0,
+	 Filename => $file,
+	 Assertions => \@expressions,
+	 Context => $context,
+	);
+    }
+  }
+  if ($conf->{'-b'}) {
+    my @expressions;
+    foreach my $expr (@{$conf->{'-b'}}) {
+      my $res = $ie->Convert
+	(
+	 InputType => "Emacs String",
+	 OutputType => "Interlingua",
+	 Input => $expr,
+	);
+      die "Assertion failed: <$expr>\n" unless $res->{Success};
+      if ($res->{Success}) {
+	push @expressions, $res->{Output}->[0];
+      } else {
+	die Dumper($res);
+      }
+    }
+    foreach my $file (@{$conf->{'-f'}}) {
+      $tracker->AssertStatements
+	(
+	 Context => $context,
+	 Class => 1,
+	 Filename => $file,
+	 Assertions => \@expressions,
+	);
+    }
+  }
+
+  my $any;
+  my $both;
+  if (exists $conf->{'-c'} or exists $conf->{'-d'}) {
+    $any = 1;
+  }
+  if ((exists $conf->{'-c'} and exists $conf->{'-d'}) or
+      ! (exists $conf->{'-c'} or exists $conf->{'-d'})) {
+    $both = 1;
+  }
+  if ($any or $both or (! exists $conf->{'-a'} and ! exists $conf->{'-b'})) {
+    if (exists $conf->{'-c'} or $both) {
+      print "File Assertions\n" if $both;
+      my $res1 = $tracker->RetrieveStatements
+	(
+	 Context => $context,
+	 Class => 0,
+	 Filenames => $conf->{'-f'},
+	);
+      if ($res1->{Success}) {
+	foreach my $assertion (@{$res1->{Result}}) {
+	  my $res2 = $ie->Convert
+	    (
+	     InputType => "Interlingua",
+	     OutputType => "Emacs String",
+	     Input => [$assertion],
+	    );
+	  if ($res2->{Success}) {
+	    print "\t" if $both;
+	    print $res2->{Output}."\n";
+	  } else {
+	    print "Cannot convert assertion: ".Dumper($assertion)."\n";
+	  }
+	}
+
+      } else {
+	print "Error retrieving statements\n";
+      }
+    }
+    if (exists $conf->{'-d'} or $both) {
+      print "FileClass Assertions\n" if $both;
+      my $res3 = $tracker->RetrieveStatements
+	(
+	 Context => $context,
+	 Class => 1,
+	 Filenames => $conf->{'-f'},
+	);
+      if ($res3->{Success}) {
+	foreach my $assertion (@{$res3->{Result}}) {
+	  my $res4 = $ie->Convert
+	    (
+	     InputType => "Interlingua",
+	     OutputType => "Emacs String",
+	     Input => [$assertion],
+	    );
+	  if ($res4->{Success}) {
+	    print "\t" if $both;
+	    print $res4->{Output}."\n";
+	  } else {
+	    print "Cannot convert assertion: ".Dumper($assertion)."\n";
+	  }
+	}
+      } else {
+	print "Error retrieving statements\n";
+      }
+    }
+  }
+}

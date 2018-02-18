@@ -1,0 +1,6 @@
+imgloop=`sudo losetup -f`
+imgfile=<REDACTED>
+sudo losetup "$imgloop" "$imgfile"
+sudo cryptsetup luksOpen "$imgloop" mybluray
+sudo mount /dev/mapper/mybluray /mnt/udf
+

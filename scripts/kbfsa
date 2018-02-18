@@ -1,0 +1,104 @@
+#!/usr/bin/perl -w
+
+# this script is not finished
+
+# index a file into the KBFS system while asserting properties about it
+
+use BOSS::Config;
+use KBS2::ImportExport;
+use KBS2::Util;
+use PerlLib::SwissArmyKnife;
+
+use DateTime;
+use Digest::MD5;
+use File::Stat;
+
+$specification = q(
+	-a <expr>	Assert the expression about subsequent files
+	<files>...	About these files
+);
+
+my $config =
+  BOSS::Config->new
+  (Spec => $specification);
+my $conf = $config->CLIConfig;
+# $UNIVERSAL::systemdir = "/var/lib/myfrdcsa/codebases/minor/system";
+
+# print Dumper([$conf->{'-a'},$conf->{'<files>'}]);
+
+# now we want to get all of the stats on the file, using the Classify
+# stuff for that
+
+my $ie = KBS2::ImportExport->new();
+
+my $res = $ie->Convert
+  (
+   InputType => "Emacs String",
+   OutputType => "Interlingua",
+   Input => $conf->{'-a'},
+  );
+
+if ($res->{Success}) {
+  my @assertions;
+  foreach my $file (@{$conf->{'<files>'}}) {
+    my $sqfile = shell_quote($file);
+    my $file2 = `chase $sqfile`;
+    chomp $file2;
+    my $stat = File::Stat->new($file2);
+    my $rand = rand();
+    $rand =~ s/^\d+\.//;
+    my $id = "file-$rand";
+    my $dt = DateTime->now();
+    push @assertions,
+      ["has-filename", $id, $file2],
+	["has-size", $id, $stat->size],
+	  ["has-mtime", $id, $stat->mtime],
+	    ["timestamp", $id, $dt->epoch];
+    if ($stat->size < 50 * 1024 * 1024 * 1024) {
+      my $md5 = Digest::MD5->new;
+      my $fh = IO::File->new("<$file");
+      $md5->addfile($fh);
+      push @assertions,
+	["has-md5sum", $id, $md5->hexdigest];
+    }
+    foreach my $assertion (@{$res->{Output}}) {
+      push @assertions, SubstituteVariables
+	(
+	 Expr => DeDumper(Dumper($assertion)),
+	 Subst => [
+		   {
+		    Is => \*{'main::?_'},
+		    ShouldBe => $id,
+		   },
+		  ],
+	);
+    }
+  }
+  print Dumper({Assertions => \@assertions});
+}
+
+sub SubstituteVariables {
+  my %args = @_;
+  # print Dumper(\%args);
+  my $e = $args{Expr};
+  my $ref = ref $e;
+  if ($ref eq "ARRAY") {
+    my @res;
+    foreach my $item (@$e) {
+      push @res, SubstituteVariables
+	(
+	 Expr => $item,
+	 Subst => $args{Subst},
+	);
+    }
+    return \@res;
+  } else {
+    foreach my $substitution (@{$args{Subst}}) {
+      # print Dumper($e)."\n".Dumper($substitution->{Is})."\n------------\n\n\n";
+      if (DumperQuote2($e) eq DumperQuote2($substitution->{Is})) {
+	return $substitution->{ShouldBe};
+      }
+    }
+    return $e;
+  }
+}

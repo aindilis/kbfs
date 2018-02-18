@@ -1,0 +1,74 @@
+#!/usr/bin/perl -w
+
+use BOSS::Config;
+use PerlLib::SwissArmyKnife;
+
+$specification = q(
+	history <expression>					Search through all revisions for expression
+	ls <revision>						List all the files in the revision
+	ls2 <revision>						List all the files in the revision, method 2
+	changes <revision>					List all the changes in the revision
+	ls_all_files <revision>					List all the files in the revision
+	changes_since_yesterday_ls 				Print files that have changed since yesterday
+	changes_since_yesterday_diff 				Do a git diff of the differences since yesterday
+	search_revisions <search>				Search through all revisions
+
+);
+
+#	see_old_revision_of_file <revision> <file>		See an old reversion of a file
+
+
+my $config =
+  BOSS::Config->new
+  (Spec => $specification);
+my $conf = $config->CLIConfig;
+# $UNIVERSAL::systemdir = "/var/lib/myfrdcsa/codebases/minor/system";
+
+my $commands =
+  {
+   changes => 'git diff-tree -p <REVISION>',
+   ls => 'git diff-tree --no-commit-id --name-only -r <REVISION>',
+   ls2 => 'git show --pretty="format:" --name-only <REVISION>',
+   history => 'git rev-list --all | xargs git grep <SHELL_QUOTED_EXPRESSION>',
+   ls_all_files => 'git ls-tree -r --name-only <REVISION>',
+   changes_since_yesterday_ls => [ 'getLastRevisionBeforeToday', 'ls' ],
+   changes_since_yesterday_diff => [ 'getLastRevisionBeforeToday', 'changes' ],
+   # search_revisions => 'git-search-revisions-of-file.sh <SEARCH> <FILENAME>',
+   # see_old_revision_of_file => ' git show <REVISION>:<FILE>',
+  };
+
+foreach my $key (keys %$commands) {
+  if ($key eq 'history' and exists $conf->{$key}) {
+    my $expression = $conf->{$key};
+    my $command = $commands->{$key};
+    my $shellquotedexpression = shell_quote($expression);
+    $command =~ s/<SHELL_QUOTED_EXPRESSION>/$shellquotedexpression/sg;
+    print "$command\n";
+    system $command;
+  } else {
+    if (exists $conf->{$key}) {
+      my $ref = ref($commands->{$key});
+      if ($ref eq 'ARRAY') {
+	my $revision;
+	foreach my $subcommand (@{$commands->{$key}}) {
+	  if ($subcommand eq 'getLastRevisionBeforeToday') {
+	    $revision = `git log --since="yesterday" | grep commit | tail -n 1 | sed -e 's/commit //'`;
+	  } else {
+	    ExecGithCommand(Command => $commands->{$subcommand}, Revision => $revision);
+	  }
+	}
+      } else {
+	ExecGithCommand(Command => $commands->{$key}, Revision => $conf->{$key});
+      }
+    }
+  }
+}
+
+sub ExecGithCommand {
+  my (%args) = @_;
+  my $command = $args{Command};
+  my $revision = $args{Revision};
+  $command =~ s/<REVISION>/$revision/sg;
+  print "$command\n";
+  system $command;
+}

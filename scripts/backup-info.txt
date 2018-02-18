@@ -1,0 +1,69 @@
+Options are
+
+D data
+N no data
+
+P public backup (for distributing FRDCSA)
+V private backup (for safety)
+
+? Unknown
+
+
+if it is a public backup, do we include no data, all data
+P-N
+
+
+
+information_schema V
+anymeal P-D
+classify P-N V
+cso P-D V
+datamart_dec2008 P-D
+elog P-N V
+folksonomy2 P-D V
+freekbs P-N V
+freekbs2 P-N V
+freekbs2-test P-N V
+fweb P-N V
+golden_retriever P-N
+gourmet P-N V
+joomla_consultancy V
+js_rapid_response P-N V
+kbarcode 
+kmax P-N V
+marketing_manager P-N V
+michalsen_ip_grouper V
+mysql V
+ossmole_merged P-D
+rb_workflow 
+rhymedict P-D
+rp_workflow 
+sayer P-N V
+sayer_corpus P-N V
+sayer_document_similarity P-N V
+sayer_ems P-N V
+sayer_formalize2_preprocessing P-N V
+sayer_generic P-N V
+sayer_liferea P-N V
+sayer_lol P-N V
+sayer_marketing_manager P-N V
+sayer_nl_to_pddl P-N V
+sayer_org_frdcsa_do P-N V
+sayer_org_frdcsa_restaurantmusicsystem 
+sayer_osbs P-N V
+sayer_paperlessoffice P-N V
+sayer_perllib_easysayer P-N V
+sayer_suppose_suppose P-N V
+sayer_test P-N V
+sayer_tfa P-N V
+sayer_translate P-N V
+sayer_unilang_webservice P-N V
+shal 
+sr22 P-D
+test
+townland
+unilang P-N V
+wf_workflow
+wiki1 V
+wikiformatter V
+zm V

@@ -1,0 +1,18 @@
+#!/usr/bin/perl -w
+
+use KBFS;
+use UniLang::Agent::Agent;
+use UniLang::Util::Message;
+
+$UNIVERSAL::agent = UniLang::Agent::Agent->new(Name => "KBFS",
+					       ReceiveHandler => \&Receive);
+$UNIVERSAL::kbfs = KBFS->new();
+
+sub Receive {
+  my %args = @_;
+  $command = $args{Message}->Contents;
+  $UNIVERSAL::kbfs->ProcessCommand($command);
+}
+
+$UNIVERSAL::kbfs->Execute;
+

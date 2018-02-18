@@ -1,0 +1,13 @@
+We want to do a few things here:
+
+We want to  be able to look at  the contents of the file.  If  it is a
+document, we  want to get the  text out and  try to find out  what the
+text is about.
+
+We can use soft clustering against existing documents.
+
+We also want to run "plagerism" detection software to see whether this
+file is related, either a  copy, derivative, remix, etc, of an earlier
+work or works.
+
+Maybe even do TDT.

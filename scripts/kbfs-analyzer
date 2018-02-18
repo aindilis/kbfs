@@ -1,0 +1,39 @@
+#!/usr/bin/perl -w
+
+
+# so the basic idea is to use a series of tests to prove information
+# about a file
+
+
+# tests
+
+# some tests are the result of running programs on files and memoizing
+# the output.  Sayer should have a special mode for execution of
+# programs on files, and knowing that there won't be side effects
+
+my $tests =
+  {
+   'file <QUOTED_FILENAME>' => sub { },
+   'File::Fingerprint' => sub { },
+   'extract <QUOTED_FILENAME>' => sub { },
+   'HTML::ToText' => sub { },
+   'PerlLib::URIExtractor' => sub { },
+  };
+
+# now there are decisions that the system is making when running these
+# tests.  these decisions are best modelled in an agent programming
+# system
+
+# make a rule based decision deliberation system
+
+# Have an ontology of tests, such that we know if there are side
+# effects, etc.  parsers for the results, etc.
+
+# use flora-2 for the rules
+
+
+
+
+# some things to do are to run the directory matcher to see if this
+# file exists elsewhere
+

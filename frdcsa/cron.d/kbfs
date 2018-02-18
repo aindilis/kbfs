@@ -1,0 +1,9 @@
+# /etc/cron.d/kbfs: crontab fragment for kbfs
+
+# Run rsync every week
+# m h dom mon dow user	command
+
+30 4    * * *   root    /var/lib/myfrdcsa/codebases/internal/kbfs/scripts/backup-mysql-databases.pl
+
+# 30 4    * * 1   root    /var/lib/myfrdcsa/codebases/internal/kbfs/scripts/rsync-backup.pl --all
+# 30 4    * * 3   root    /var/lib/myfrdcsa/codebases/internal/kbfs/scripts/rsync-backup.pl --icodebases

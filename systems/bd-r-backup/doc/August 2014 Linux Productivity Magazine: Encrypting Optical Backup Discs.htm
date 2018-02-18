@@ -1,0 +1,2235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<title>August 2014 Linux Productivity Magazine: 
+Encrypting Optical Backup Discs</title>
+<meta name="generator" content="Bluefish 2.2.3">
+<meta name="author" content="slitt">
+<meta name="copyright" content="Copyright (C) 2014 by Steve Litt">
+<meta name="keywords" content="backup,backing up,rsync,LUKS">
+<meta name="description" content="Backup for the 2010's">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="content-style-type" content="text/css">
+<meta http-equiv="expires" content="0">
+
+<style type="text/css">
+
+div.centerer{
+display: block;
+text-align: center;
+}
+
+div.lpm{
+background-color: #000066;
+border-style: ridge;
+border-width: 8px;
+border-color: #999999;
+margin-left: auto;
+margin-right: auto;
+display: inline-table;
+text-align: center;
+padding-left: 1em;
+padding-right: 1em;
+position: static;
+
+}
+
+div.lpm p.lpm{
+text-align: center;
+font-size: 300%;
+font-weight: bold;
+text-align: center;
+margin: 0ex 0em 0.5ex 0em;
+color: #ffffee;
+}
+
+div.lpm p.lpmdate{
+text-align: center;
+font-size: 120%;
+font-weight: bold;
+text-align: center;
+margin: 1ex 0em 2ex 0em;
+color: #eeffff;
+}
+
+div.lpm p.lpmtitle{
+text-align: center;
+font-size: 150%;
+font-weight: bold;
+text-align: center;
+margin: 1ex 0em 2ex 0em;
+color: #eeffff;
+}
+
+
+p.presents{
+text-align: center;
+font-size: 150%;
+font-weight: bold;
+margin-top: 0ex;
+}
+
+p.copyright{font-size: 80%; font-weight: bold; text-align: center;}
+
+
+div.books{
+display: inline-block;
+background-color: #fffff0;
+border-style: ridge;
+border-collapse: collapse;
+border-width: 6px;
+padding: 12px;
+margin-right: 24.5%;
+margin-left: 24.5%;
+padding 1ex;
+}
+
+div.books p{text-align: center; font-weight: bold; margin: 0ex 0em 0ex 0em;}
+
+p.nav{
+text-align: center;
+font-size: 90%;
+font-weight: bold;
+}
+
+div.quote{
+width: 80%;
+background-color: #cccccc;
+padding: 0;
+border-style: ridge;
+border-width: 3px;
+margin-right: 9.8%;
+margin-left: 9.8%;
+margin-top: 2ex;
+}
+
+div.quote p{font-weight: bold; text-align: center; color: #000099; margin: 0 0 0 0;}
+span.quoter{color: black;}
+
+p.contents{
+ font-size: 200%; 
+ font-weight: bold;
+ margin: 1ex 0em 0ex 0em;
+}
+
+ul.contents{
+background-color: #f0ffff;
+padding-bottom: 3ex;
+padding-top: 3ex;
+font-weight: bold;
+ margin: 1ex 0em 6ex 0em;
+}
+
+ul.contents li{
+margin: 0ex 0em 0.1ex 0em;
+}
+
+p.byline{font-size: 80%; font-weight: bold;}
+
+p.endline{font-size: 80%; font-weight: bold;}
+
+span.code{font-size: 90%; font-family: monospace; color: #000066;}
+h2>span.code{
+  font-size:110%;
+  color: #000000; 
+  }
+
+span.emph{font-style: italic; font-size: 110%;}
+
+span.buzz{
+font-variant: small-caps;
+color: #006600;
+}
+
+
+h1{margin-top: 3ex; margin-bottom: 0ex; color: #000066;}
+
+pre.longcode,pre.code{
+font-size: 90%;
+margin: 3ex 0em 3ex 0em;
+color: #000066;
+background-color: #fffff4;
+text-align: left;
+}
+
+
+pre.longcode{
+padding: 2ex 0em 2ex 1em;
+border-bottom-width: 1ex;
+border-bottom-style: solid;
+border-top-width: 1ex;
+border-top-style: solid;
+}
+
+pre.longcode,pre.code>span.user{
+   font-weight: bold; 
+   font-size: 115%; 
+   padding-left: 0.3em; 
+   padding-right: 0.3em;
+}
+
+pre.code>span.user{color: #000033; background-color: #ffe8e8;}
+pre.longcode>span.user{color: #660000; background-color: #e0e0ff;}
+
+ul li{
+margin-bottom: 1ex;
+}
+
+div.note{
+width: 60%;
+margin-left: 19.8%;
+margin-right: 19.8%;
+text-align: center;
+border-style: ridge;
+border-width: 4px;
+background-color: #fff9fc;
+padding-left: 1em; 
+padding-right: 1em;
+}
+
+div.note p.title{
+font-weight: bold;
+font-size: 200%;
+color: black;
+text-align: center;
+margin-top: -0.1ex;
+margin-bottom: -0.5ex;
+}
+div.note p{
+text-align: left;
+font-weight: normal;
+line-height: 130%;
+}
+
+p.stories{
+ margin: 1ex 6em 2ex 6em;
+ font-style: italic;
+}
+
+div.danger{
+background-color: #fff0f0;
+width: 60%;
+border-style: ridge;
+border-width: 8px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 2ex;
+margin-bottom: 2ex;
+text-align: center;
+}
+
+div.danger p.title{
+font-size: 200%;
+font-weight: bold;
+color: #99ffff;
+background-color: #cc0000;
+border-style: ridge;
+border-width: 4px;
+text-align: center;
+margin-left: 0ex;
+margin-right: 0ex;
+}
+
+div.danger p{
+font-weight: bold;
+color: black;
+text-align: left;
+margin: 0ex 0.5em 1.5ex 0.5em;
+}
+
+</style>
+
+</head>
+
+<!-- ===========  BODY STARTS HERE! ================= -->
+<!-- ===========  BODY STARTS HERE! ================= -->
+<!-- ===========  BODY STARTS HERE! ================= -->
+<body>
+
+
+<p class="presents"><a href="http://www.troubleshooters.com/troubleshooters.htm">Troubleshooters.Com</a> Presents</p>
+
+<div class="centerer">
+<div class="lpm">
+<p class="lpm">Linux Productivity Magazine</p>
+<p class="lpmdate">August 2014</p>
+<p class="lpmtitle">Encrypting Optical Backup Discs</p>
+</div>
+</div>
+
+
+<p class="copyright">Copyright (C) 2014 by Steve Litt. All rights 
+reserved. Materials from guest authors copyrighted by them and licensed 
+for perpetual use to Linux Productivity Magazine. All rights reserved to
+ the copyright holder, except for items specifically marked otherwise 
+(certain free software source code, GNU/GPL, etc.). All material herein 
+provided "As-Is". User assumes all risk and responsibility for any 
+outcome.</p>
+
+<div class="centerer">
+<div class="books">
+<p>Career skills nobody else teaches:</p>
+<p><a href="http://www.troubleshooters.com/bookstore">Books</a></p>
+<p><a href="http://www.troubleshooters.com/newtc_courseware.htm">Courseware</a></p>
+</div>
+</div>
+
+
+<p class="nav">[ <a href="http://www.troubleshooters.com/troubleshooters.htm">  Troubleshooters.Com</a> |
+       <a href="http://www.troubleshooters.com/lpm/archive.htm">Back Issues</a> | 
+       <a href="http://www.troubleshooters.com/tpromag/archive.htm">Troubleshooting Professional Magazine</a> ]</p>
+
+<hr>
+<div class="quote">
+<p>Anything I don't have a backup copy of is just a temp file.<span class="quoter"> -- Kevin Korb</span></p>
+</div>
+
+<p class="contents">CONTENTS</p>
+<ul class="contents">
+<li><a href="#editors_desk">Editor's Desk</a></li>
+<li><a href="#prerequesites">Prerequisites</a></li>
+<li><a href="#security">Security</a></li>
+<li><a href="#lessons_of_heartbleed">Lessons of Heartbleed</a></li>
+<li><a href="#cloud_backup">"Cloud Backup"</a></li>
+<li><a href="#spinning_disks_and_thumb_drives_and_tape">Spinning Disks and Thumb Drives and Tape</a></li>
+<li><a href="#when_unencrypted_backups_are_necessary">When Unencrypted Backups Are Necessary</a></li>
+<li><a href="#your_safe_deposit_box">Your Safe Deposit Box</a></li>
+<li><a href="#the_great_backup_shred_of_2014">The Great Backup Shred of 2014</a></li>
+<li><a href="#he_who_laughs_last">He Who Laughs Last</a></li>
+<li><a href="#bluray_backup_review">Blu-ray Backup Review</a></li>
+<li><a href="#luks_intro">LUKS Intro</a></li>
+<li><a href="#data_obliteration_danger">Data Obliteration Danger</a></li>
+<li><a href="#luksbluray_objective">LUKS/Blu-ray Objective</a></li>
+<li><a href="#handy_troubleshooting_tools_for_encrypted_backups">Handy Troubleshooting Tools For Encrypted Backups</a></li>
+<li><a href="#shellscripts_for_encrypted_backup">Shellscripts For Encrypted Backup</a></li>
+<li><a href="#summary">Summary</a></li>
+</ul>
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="editors_desk">Editor's Desk</h1>
+<p class="byline">By Steve Litt</p>
+
+<p>Heartbleed.</p>
+
+<p>Discovered on April 7, 2014, the Heartbleed flaw in OpenSSL
+was a mirror that showed us all our insecurities, not just those
+involving OpenSSL. Weak passwords. Passwords shared between
+multiple accounts. And the subject of this Linux Productivity
+Magazine issue, pilferable optical disc backups.</p>
+
+<p>And of course, pilferable optical disc backups are a subset
+of pilferable disk content: The kind of content that someone with
+physical access
+can exploit. A truly secure setup has an encrypted backup partition on the backup
+server, and a main machine with every data-containing
+partition encrypted. I haven't written about that because this
+LPM (Linux Productivity Magazine) issue is already huge: Enough
+is enough.</p>
+
+<p>"Enough is enough" means prioritization, and although you should
+encrypt all data, I chose optical discs as this LPM issue's
+topic because:</p>
+
+<ul>
+<li>If you're anything like me, you have more than an order of magnitude more backup
+optical discs than you do computers.</li>
+<li>You're more likely to lose track of backup optical discs than you are of whole computers.</li>
+<li>A major purpose of backup optical discs is offsite backup,
+where by definition somebody else has physical control of your
+media.</li>
+</ul>
+
+<div class="note">
+<p class="title">Note:</p>
+<p>If you live in a neighborhood with frequent breakins and 
+robberies, have a lot of people passing through your home,
+have friends, relatives or roommates who aren't totally
+trustworthy, or if you have parties hosting friends and
+friends-of-friends, the priorities stated here are less applicable. Nevertheless, you need to start someplace, and
+it does little good to encrypt your main computer's data
+partitions and your backup server's backup partitions while
+you still have innumerable unprotected optical backup discs
+hanging around in your home or in your car's trunk or at a friend's house. You need to do both: Start with the optical
+backup discs and then move on to hard drives.</p>
+</div>
+
+<p>This Linux Productivity Magazine was authored over a long
+period of time. Starting in mid April, when Heartbleed made
+me realize the extreme vulnerability of unencrypted backup
+discs, through early May when I shredded most of my unencrypted
+started actually making optical backup discs, put the rest
+in a bank safe deposit box, and began making encrypted optical
+backup discs, through June and July when I refined my backup
+and encryption scripts, I added to this magazine. So if
+it seems like some of the articles were written by someone
+more knowledgeable than some of the others, it's true. Some
+articles were written by someone with a week's experience, and
+some with three months. The following articles were written or
+re-written in July 2014:</p>
+
+<ul>
+<li><a href="#bluray_backup_review">Blu-ray Backup Review</a></li>
+<li><a href="#luks_intro">LUKS Intro</a></li>
+<li><a href="#data_obliteration_danger">Data Obliteration Danger</a></li>
+<li><a href="#luksbluray_objective">LUKS/Blu-ray Objective</a></li>
+<li><a href="#handy_troubleshooting_tools_for_encrypted_backups">Handy Troubleshooting Tools For Encrypted Backups</a></li>
+<li><a href="#shellscripts_for_encrypted_backup">Shellscripts For Encrypted Backup</a></li>
+</ul>
+
+<p>The preceding are the nuts and bolts, actual facts, how you
+do it articles. The articles written earlier are mostly about
+backup philosophy and beliefs.</p>
+
+<p>Some of my articles are opinionated, and you might
+wonder why. The reason is simple: Throughout the more than
+two decades I've used my backup beliefs to implement my backup
+tactics and strategy, some folks acted like I was
+committing religious heresy, and said some bad things about
+my methods and myself. If you implement my beliefs and my 
+methods, the same thing will happen to you. The opinion
+articles in this Linux Productivity Magazine issue simply
+pre-refute the accusations of incompetence that are almost
+certain to befall you when you roll your own backup strategy.</p>
+
+<p>One more thing: Some of the commands in this Linux Productivity
+magazine issue involve formatting, either LUX or UDF. Formatting
+the wrong device permanently loses data. Make an unencrypted backup of all your data before you start encrypting optical
+backup discs, so if worst comes to worst, you can restore
+your data.</p>
+
+<p>So kick back, relax, and read this issue of Linux Productivity Magazine. If you produce data,
+then you need effective backup, and if you need effective backup, this is your magazine.</p>
+
+
+<p class="endline">Steve Litt is the author of the <a href="http://www.troubleshooters.com/newtc_courseware.htm">Universal Troubleshooting Process Courseware</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>. </p>
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="prerequesites">Prerequisites</h1>
+<p class="byline">by Steve Litt</p>
+
+<p>Backup is a set of beliefs. If you don't know the backup
+beliefs that led me to do things as described in this LPM issue,
+you'll end up scratching your head and thinking "this guy
+Steve Litt is crazy." So, before you go through this LPM issue,
+please read my three previous documents on backup, in
+the order given:</p>
+
+<ol>
+<li><a href="http://www.troubleshooters.com/tpromag/9807.htm">Backing Up Data</a> (July 1998)</li>
+<li><a href="http://www.troubleshooters.com/lpm/200208/200208.htm">Backup In a Linux Environment</a> (August 2002)</li>
+<li><a href="http://www.troubleshooters.com/lpm/200609/200609.htm">Making Backups Easier</a> (September 2006)</li>
+</ol>
+
+<p>A summary of the backup beliefs revealed in the preceding
+documents is that a backup most conform to all of these:</p>
+
+<ul>
+<li>Predictable and Trustworthy</li>
+<li>Accurate and Complete</li>
+<li>Restorable</li>
+<li>Easy to use</li>
+<li>Part of a good backup system</li>
+</ul>
+
+<p>The LPM issue you're now reading adds one belief to the
+preceding list:</p>
+
+<div class="quote">
+<p>Must be unharmful if it falls into the wrong hands.</p>
+</div>
+
+<p>Compare and contrast my backup beliefs with yours, and feel
+free to change my procedures to meet your backup beliefs.</p>
+
+
+<p class="endline">Steve Litt is the author of <a href="http://www.troubleshooters.com/bookstore/key_excellence.htm">The Key to Everyday Excellence</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="security">Security</h1>
+<p class="byline">by Steve Litt</p>
+
+<p>For obvious reasons, I won't speak of my personal situation. But if 
+you listen to ads and to peoples' conversations,
+it's obvious that people are using computers to do their taxes. They're 
+using computers for online purchases. They're
+using computers to interface with all sorts of government agencies. The 
+data produced by all these interactions could be devastating
+if it fell into the wrong hands, and one way it could do so is a lost or
+ pilfered backup.</p>
+
+<p>I've recommended offsite backups: Sometimes out of state backups, in 
+all my writings. But, unless the backup is password protected, you'd
+better have an awful lot of trust for the person holding it. Not just 
+trust in his or her honesty, but trust in his or her competence, in 
+his or her judgement, and his or her family and friends. Such people are
+ few and far between.</p>
+
+<p>Now consider the same situation, but the backup is password 
+protected. Sure, a determined badguy in possession of the backup could
+take ten minutes to figure out that it's a LUKS encrypted, copy it to a 
+hard drive, and run a program to brute force it, or
+perhaps use a different kind of attack such as watermarking. But if your
+ password is reasonably long and reasonably random, it's going 
+to take a lot of effort and resources. To become compromised, your 
+backup will need to find its way to someone capable of such
+exploits, and such people aren't common. If your backup is stolen, by 
+far its most likely final resting place is a garbage can, after
+someone fails to even mount it.</p>
+
+
+<p class="endline">Steve Litt is the acting president of the <a href="http://www.golug.org/">Greater Orlando Linux User Group</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="lessons_of_heartbleed">Lessons of Heartbleed</h1>
+<p class="byline">By Steve Litt</p>
+<p>The Heartbleed security breach coded into OpenSSL was announced April 7, 2014. Within a day, as I remember,  Filippo Valsorda
+had created a heartbleed detector at <a target="_blank" href="https://filippo.io/Heartbleed/">https://filippo.io/Heartbleed/</a>.
+ I 
+owe a big debt of gratitude to Filippo: His tool enabled me to move 
+forward with password changes. As typical, within a week, all sorts of
+deep pocket, late-to-the-party imitators followed in Filippo's 
+footsteps. Anyway...</p>
+
+<p>Anyone with a shred of knowledge was scared to death of Heartbleed. In my opinion, it's the worst thing that happened
+to the Internet since the 1988 Robert Morris Worm. Unlike Y2K, there was no warning: On April 6 you believed yourself
+comfortably secure, and by the night of April 7 you realized your passwords and credentials were hanging out for anyone
+to scoop up, and had been for two years, and data harvested during that interval could <em>later</em> be decrypted using
+Heartbleed techniques. Every password you owned was assumed known by the world. And worse, for each password,
+you had to use a Heartbleed detector to make sure it was fixed, or else your new password would also be known.</p>
+
+<p>Worse yet, as I write this on May 10, 2014, listening to the news or to Geeks, you'd think Heartbleed is yesterday's
+news, it's sooooo April! Yet the fact is, <a href="https://vivaldi.net/blogs?view=entry&amp;id=27907">several percent</a> of the
+Internet's servers are still Heartbleed vulnerable, in mid May. Heartbleed is nothing to trifle with or underestimate.</p>
+
+<p>The one positive about Heartbleed is the lessons it gave all but the most clueless among us:</p>
+
+<ul>
+<li>No protection from "weakest chain" principle</li>
+<li>Don't knock security by obscurity</li>
+<li>Any Internet communication has risks</li>
+<li>Badguys work really hard</li>
+<li>You're not as safe as you thought</li>
+</ul>
+
+<h2>No protection from "weakest chain" principle</h2>
+<p>If you want almost-absolute protection from bicycle theft, you need a U lock with accompanying
+1/2" case hardened chain. 
+The weight of the big, heavy lock and chain slows acceleration annoyingly. Finding the right hitching pole
+makes parking annoying, and so does the balance dance you do trying to wrap the huge chain around both 
+wheels and the frame. So many of us use a lock and cable: Easily defeated by a large bolt cutter or even a
+wire cutter for the guy who has 15 minutes to gnaw through the cable. But such a setup is remarkably safe,
+because the bicycle next to yours is locked with a chain that looks like a string, capable of being cut in one
+minute by a tool carried in a pocket.</p>
+
+<p>It's called the <span class="term">weakest chain principle</span>, and it has cheaply protected many a
+bicycle. It's a poorly kept secret that many of us felt that our online data was protected by the same principle.
+"Why should they risk prison nailing my tough password when they can own a tycoon using his wife's birthday
+as a password?"</p>
+
+<p>During Heartbleed we found the answer to that question: There's not all that much risk. An accomplished
+badguy can grab 50% to 90% of passwords in a password list, in a few hours. Today's dictionary and brute force 
+attacks are smart enough to understand how humans think, and act accordingly. If you think you're safe by
+1ndigo instead of Indigo, fr0nt instead of frOnt, or any of the other things that are easy for humans and harder
+for computers, forget it: the badguys have programmed that into their attacks. Stringing together dictionary words and
+common names? They'll find that before the first truly brute force move. And speaking of brute force, in certain situations
+an 8 character password can be brute-forced in minutes. And if they crack your password in any venue, they'll follow
+your trail all over the Internet, using that same password, because they know that passwords are hard to remember, 
+and people are likely to reuse them. And if you use the name of that one-night-stand girl from 1995, you'd better have
+kept your mouth shut about that, or somebody will pretext it out of you.</p>
+
+<p>If you want your identity intact, you'd better use distinct passwords everywhere, making them long and seemingly
+random. Don't depend on everyone else making it easier: Go all the way.</p>
+
+<h2>Don't knock security by obscurity</h2>
+<p>Elapsed time makes the best of us seem foolish. Back in the dot-com boom, when we Linux evangelists were trying
+to conquer the world, one trait of Linux we touted was its security, and we never failed to mention that security by
+obscurity is no security at all.</p>
+
+<p>What a difference a decade and a half makes. Post heartbleed, the most commonly heard phrase about passwords is
+"and that's all I'm going to say about that!":</p>
+
+<ul>
+<li>My passwords are 20 characters long, and I have a special technique 
+for producing them, and that's all I'm going to say about that!</li>
+<li>I have a password matrix that makes sense to me and nobody else, and that's all I'm going to say about that!</li>
+<li>I have a special method for remembering passwords, and that's all I'm going to say about that!</li>
+<li>I use a password wallet, and that's all I'm going to say about that!</li>
+</ul>
+
+ <p>Nowadays, everybody in the know uses obscurity as part of their password strategy, because they know that with
+bunches of modern computers, a password memorable to its owner can be cracked in surprisingly little time by a brute
+force attack. So they add in some obscurity to make longer, more random, more memorable (to them alone) passwords,
+and then they keep their mouths shut about the obscurity. And that's all I'm going to say about that!</p>
+
+<h2>Any Internet communication has risks</h2>
+<p>Pre-Heartbleed, most of us felt comfortable with ssl/tls email and web transactions. End to end protection,
+only a badguy with access to one end could defeat it. Then Heartbleed came along, and a fairly skilled badguy could
+not only access the server, but he could actually see inside the server's memory map, where decoded data runs
+free. Now we're not so confident, and more of us have concluded there are certain things that just shouldn't be entrusted
+to the Internet.</p>
+
+<p>People used to laugh at me because I refused web access to any bank account or credit card. "Oh, Steve, you're
+such an old retro-grouch, come into the twenty first century!"</p>
+
+<p>Post Heartbleed, I'm the one laughing. See, between 1984 and 2000, I made my living programming computers,
+so I knew first hand that most computer programs have mistakes in their code, and a lot of those mistakes can result
+in security breaches. So I refused to entrust my finances to web interfaces, and I'm very glad I didn't.</p>
+
+<p>Back in the 2004 presidential election, I copied Richard Stallman on a
+ thread suggesting all vote-counting software should be Free Software.
+Richard wrote back saying something to the effect that <em>no</em> software, free or otherwise, should be used for elections,
+because it makes throwing an election too easy. There are just some things that shouldn't be done with software, and some things
+that shouldn't be done with the Internet.</p>
+
+<h2>Badguys work really hard</h2>
+<p>If Heartbleed taught us anything, it was that badguys work really hard to get our passwords. Brute force, human
+factors, pretexting/social engineering, they do it all, just to identity theft us, or sell our info to someone who will. We no
+longer want to make it inconvenient for badguys, we want to make it impossible.</p>
+
+<h2>You're not as safe as you thought</h2>
+<p>Everyone reading this article knew, a decade ago, not to use the word "password",
+or our name, or a relative's name, a relative's birthday, or even a dictionary word as
+a password. And knowing that, a lot of us thought we were ahead of the game. Heartbleed
+showed us just how wrong we could be.</p>
+
+<p class="endline">Steve Litt is the originator of the <a href="http://www.troubleshooters.com/tuni.htm">Universal Troubleshooting Process</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="cloud_backup">"Cloud Backup"</h1>
+<p class="byline">by Steve Litt</p>
+
+<p>Mention backups, and somebody will enthusiastically recommend "cloud backups". And more often than not, they're not
+just enthusiastic, they're judgmental:</p>
+
+<ul>
+<li>"Cloud backup is much more secure than your silly home-grown backup. 
+With cloud backup, your data is on redundant servers, so no natural disaster can wipe it out."</li>
+<li>"Cloud backup is so easy. If you value your time, cloud backup is the way to go."</li>
+<li>"Backing up to optical or oxide media is sooooo 2005. The cloud is how it's done now!"</li>
+<li>"I wouldn't waste my time doing my own backups. Maybe you have the time, but I don't!"</li>
+<li>"Cloud backup is more secure than handling your own backups!"</li>
+<li>"Recordable optical discs degrade quickly!"</li>
+</ul>
+
+<p>I have no doubt that some people are in situations where "cloud backup" is wonderful. Perhaps they live in
+one of the fortunate municipalities endowed with high upload speeds. Maybe they've found a 
+company that, <em>so far</em>, has been very responsible about protecting and preserving their data. Perhaps they don't
+have all that much data to back up. And I think it's likely that so far, their restore needs have been modest: A file here and
+a directory there, but not gigabyte after gigabyte of data.</p>
+
+<p>Let's do a little math. My broadband is 10Mbps down, 1Mpbs up. These are MegaBITs per second, so you divide by 8
+to get MegaBYTEs. I'm getting about 0.13 MegaBYTES per second up.</p>
+
+<p>Let's say the data I need to back up is 26 GigaBYTES after compression. That's GIGA Bytes. Divided by 0.13
+Megabytes per second, that's 200,000 seconds. At 86,400 seconds per day, that's 2.3 days to upload my data for the first time.
+I guess you start your upload, go on a weekend vacation, and hope your Internet connection doesn't go down during that time.</p>
+
+<p>If you have 10Mbps up, and assuming no bottlenecks along the way, the
+ 26GB of data takes 0.23 days, or a little less than 6 hours.
+Six hours is actually practical, especially considering that (I hope) 
+after your initial backup, all others are incremental. That's how 
+<span class="code">rsync</span> works.</p>
+
+<p>In most localities within the United States, 10Mbps up is a very 
+special thing, costly if you can get it at all. You wouldn't purchase 
+such
+a plan just for backup. Also, keep in mind that you might not get what 
+you pay for. 10Mbps up means up to 
+the nearest part of the backbone, not 10Mbps all the way to the cloud 
+backup vendor. There could be a lot
+of potential bottlenecks between them. And, many broadband vendors 
+oversell, serve too many people with
+too little fiber, and end up offering much lower speeds than contracted.</p>
+
+<div class="note">
+<p class="title">Note:</p>
+<p>If you live in the United States, and don't like paying twice to five times as much for
+half to one tenth the bandwidth to be had in Europe or the Far East, you might want to
+write President Obama asking for the telecoms to be reclassified as utilities. They're necessary
+for everyday life, they perform as monopolies, so let's regulate them like monopolies and
+join the 21st Century.</p>
+</div>
+
+<p>Even if you already have true 10Mbps up with no bottlenecks to your 
+cloud backup vendor, cloud backup
+is no panacea. Remember Target's December 2013 security breach, putting 
+up to 70 million credit cards in jeopardy of identity fraud? How about
+the August 2007 breakin at Monster.Com, where confidential info of 1.3 
+million job-seekers was stolen? Did you know that
+Adobe Systems had private customer info stolen in the autumn of 2013, 
+affecting as many as many as 38 million customers?
+There's a <a target="_blank" href="http://en.wikipedia.org/wiki/Adobe_Systems#Source_code_and_customer_data_breach">Wikipedia 
+article</a> about that breach.</p>
+
+<p>Security isn't the only potential problem. If you're anything like me, you've had at least one web host implode on you.
+You know what I mean: April 1 they have a few email glitches, April 8 you're getting no email, April 12 you can no longer
+<span class="code">ssh</span> to your web host, April 14 you can no longer log into their Cpanel and tech support starts
+sending you form letters instead of trying to help, April 16 your website becomes just a horizontal line on the browser,
+and on April 17 you find and pay for a new web host, point your domain's DNS to the new web host, <span class="code">sftp</span>
+your website up to the new webhost, and thank your lucky stars you had a copy of your website on your desktop computer.
+Now imagine that your backup guys imploded like that, with gigabyte after gigabyte of your backups gone, 
+including earlier incremental backups.</p>
+
+<p>And then there's this: You've probably already chosen the strategy you'll employ if the CIA bangs on your door demanding
+your computers and passwords, or if the NSA wants to put a backdoor in your computers. What do you suppose your cloud backup
+host would do? Read their terms of service and you'll find out.</p>
+
+<p>Speaking of terms of service, one would think that for something as valuable as your years and years of backup data, your
+cloud backup vendor would guaranty the availability and security of your backup data every which way. Read the TOS. Is that
+what they do? Or do they disclaim everything and make <em>you</em> indemnify <em>them</em>?</p>
+
+<p>Not all cloud backup is created equal. Some require special clients requiring specific (often non-Linux) operating
+systems. Some automatically back up your whole hard disk, and if you had files covered by a nondisclosure agreement
+that you didn't want backed up, well, oops! Some are always backing up, on a continuous basis, so you never need to
+run a command or click anything to institute a backup. Of course, that 1TB experimental file that you created
+just to test something is now part of your backup. And, with continous backup, you'd better be vigilent to make
+sure that it's still really backing up. And of course, with big data, cloud backup can get expensive.</p>
+
+<p>If you structure your backup strategy the way I recommend in my writings, I guarantee that:</p>
+<ul>
+<li>Cloud backup advocates will leapfrog each other telling you "the cloud" is the way to go, and your
+way is for retro-grouches.</li>
+<li>The more you tell them that you're doing it with local <span class="code">rsync</span>, optical
+discs and a safe deposit box, the more strident they'll become in their criticism of your techniques.</li>
+</ul>
+
+<p>Let them rant and rave. They've found something that (apparently) works for them, so they're sure
+their way works for you too. If you believe your backups are too important to trust to others,
+ignore them.</p>
+
+
+<p class="endline">Steve Litt is the author of <a href="http://www.troubleshooters.com/bookstore/28tales.htm">Twenty Eight Tales of Troubleshooting</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="spinning_disks_and_thumb_drives_and_tape">Spinning Disks and Thumb Drives and Tape</h1>
+<p class="byline">by Steve Litt</p>
+
+<p>Many folks recommend backing up to USB spinning disks and
+USB thumb drives. My view: Close but no cigar.</p>
+
+<p>The case for spinning disks is pretty obvious: a Blu-ray
+holds only about 24,500,000,000 bytes of data and costs between
+one and two dollars for commodity grade bought in quantities of
+25. USB spinning disk external hard drives are $100 for 1.5TB: much 
+cheaper per GB. And, Blu-ray burning is time consuming, especially when 
+your
+backup set exceeds one Blu-ray and you need to apportion files
+between discs.</p>
+
+<div class="note">
+<p class="title">Hot Tip:</p>
+<p>If the final Blu-ray would be grossly underfilled, use one or
+more dvd's as the final discs in the backup set.</p>
+</div>
+
+<p>But spinning disks have their own problems. First, just like
+your optical discs, you need to encrypt them. OK, that's no big deal. 
+Secondly, because spinning disks are read-write, you're always
+tempted to re-use them, thus blowing off old backups that might
+contain your best last copy of a certain file that went missing
+a few years ago. I think this problem would be best solved by
+using rsync and cp -al, all to an encrypted partition on the
+USB spinning disk, something like the following:</p> 
+
+<pre class="code">#!/bin/bash
+datestamp=$(head -n1 /stevebup/rsync/meta/timestamp.txt)
+incname=inc_$datestamp
+
+cd /stevebup/
+echo "PLEASE WAIT, MAKING INCREMENTAL COPY, cp -al rsync $incname..."
+cp -al rsync $incname
+</pre>
+
+<p>In other words, you use the backup's timestamp to make
+a <span class="code">inc_$datestamp</span> containing hardlinks
+to the corresponding files and directories in the 
+<span class="code">rsync</span> directory that just 
+received the latest and greatest. When a later backup of a changed
+file goes into the <span class="code">rsync</span> directory,
+the subsequent <span class="code">cp -al</span> to 
+<span class="code">inc_$datestamp_new</span> leaves older versions 
+of the file linked to the old version, and just hard links
+the <span class="code">inc_$datestamp_new</span> copy to the latest
+in the <span class="code">rsync</span> directory. This
+forms a series of incremental backups using
+only one copy of each version of each file.</p>
+
+<p>But now you have all backups on one device, and if it goes
+bad, ten years of incremental backups are lost. You'd need two
+encrypted backup spinning disks.</p>
+
+<p>Even then, there's some malware that messes with connected
+disks, so that malware could nail both your backup spinning
+disks if you're not aware of it.</p>
+
+<p>And then there's the fact that spinning disks were never designed or 
+manufactured to be used less than once every few days. Leave them unused
+ for a couple months, and they just might not spin.</p>
+
+<p>For all the preceding reasons, although encrypted USB spinning
+disks have their place in a backup system, they should never
+be the sole backup of valuable data. They are always hardware read/write, they're too expensive to buy in large quantity,
+they're much harder to place in a safe deposit box in quantity.
+Blu-ray BD-R discs are hardware read/only after burning with
+LUKS encryption.</p>
+
+<p>Bottom line, encrypted USB spinning disks are wonderful for
+gross backup, like bare metal backups. But for the data
+that would be a business-killer to lose, rather than just
+costing an extra few days, you need to augment spinning
+disk backup with write-once media like Blu-ray.</p>
+
+<p>Then there's thumb drives. What a bad idea! Not a month goes
+by when you don't hear of a huge leak of credit card or other
+sensitive information because an employee lost a thumb drive.
+Thumb drives are physically too small to mark adequately, lots of them
+look identical, they're easy to confuse with each other, 
+they're slow as molasses, and, especially if formatted with
+Windows formats, prone to spontaneous data loss. Although
+they're small, their shape makes storage in numbers, especially
+in any kind of organized fashion, inefficient.
+On a per Gigabyte basis, they're more expensive than spinning
+disks and Blu-ray media. If you <em>ever</em> put any kind
+of sensitive or proprietary information on a thumb drive,
+for gosh sakes encrypt it.</p>
+
+<p>Speaking of bad ideas, tape backup is the king of bad
+ideas, unless you want to spend a fortune on the tape drive
+and media. Here's the problem: Tape stretches; oxide flakes
+off. Oxide flakes off a lot more on a flexible surface than
+on a hard drive platter. As a software developer throughout most of the 
+1980's and 1990's, I've seen innumerable tapes fail to restore. I've 
+seen admins go back through three or four versions before they found one
+ that could restore.</p>
+
+<p>And for every good tape drive, like those old reel-to-reel,
+vaccuum driven, refrigerator sized DEC drives, I've seen five
+pieces of junk like those old autoloaders, the various consumer
+grade cassette loader systems, and other oddities. Doesn't it
+seem like none of them plays each others' tapes, and most of
+them have proprietary formats? What could <em>possibly</em>
+go wrong?</p>
+
+<p>At this point in my tape discussions, somebody pipes up
+with the true statement that I'm talking about consumer grade
+tape drives and media: The professional stuff is reliable. OK,
+fine, for sure, for sure, but do you want to be <em>that guy</em>,
+who spends $2000.00 on his quad i7 with 32GB RAM, and $3500.00
+for his tape backup hardware? Me neither.</p>
+
+<p>Professional grade tape backup has its place: Where tapes are
+handled by skilled professionals, stored in climate controlled
+vaults, kept track of with a professional system, tapes
+systematically retired and destroyed when they've been used
+too much or have gotten too old, offsited
+with a professional company who does that sort of thing,
+delivered by reliable people. In other words, in an organization
+with enough data, and enough profit coming from that data,
+to spend many thousands taking care of their data.</p>
+
+<p>Blu-rays have these backup advantages:</p>
+<ul>
+<li>Write once, read-only after that. Malware impervious.</li>
+<li>Cost two bucks apiece. Less than $150/year, and you
+can have them in several locations.</li>
+<li>No oxide to flake off. Stiff enough to resist physical
+stresses.</li>
+<li>No temptation to abandon old backups to reuse media.</li>
+<li>Small and easy to store, singly or in quantity. Trivial
+to stash in the trunk of your car.</li>
+<li>My research tells me that Blu-ray discs are more time
+consuming to brute-force than spinning discs.</li>
+</ul>
+
+<p>USB spinning disks, and maybe even thumb drives, are wonderful
+as a component of a complete backup system, but they're not 
+sufficent. You need optical disc backup, with or without them.
+As far as tape, if you're on any kind of budget, and value
+your data, you don't want it.</p>
+
+<p class="endline">Steve Litt is the author of <a href="http://www.troubleshooters.com/bookstore/rl21.htm">Rapid Learning
+For the 21st Century</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="when_unencrypted_backups_are_necessary">When Unencrypted Backups Are Necessary</h1>
+<p class="byline">by Steve Litt</p>
+
+<p>Stuff happens. Passwords can be forgotten. Password strategies can be forgotten, or,
+if they depend on data or code, that data or code could be lost. You could be run over by a train
+so that your heirs need the backup. These are situations requiring you to have a few unencrypted
+backups.</p>
+<p class="endline">Steve Litt is the author of <a href="http://www.troubleshooters.com/bookstore/tsjustfacts.htm">Troubleshooting: Just the Facts</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="your_safe_deposit_box">Your Safe Deposit Box</h1>
+<p class="byline">by Steve Litt</p>
+<p>There are only two places an unencrypted backup belongs:</p>
+<ol>
+<li>In a bank safe deposit box</li>
+<li>Temporarily on your desk, for the purpose of restoring and then returning to the safe deposit box.</li>
+</ol>
+
+<p>A safe deposit box is also an excellent offsite location for a password protected copy of a recent backup. The fire or robbery
+or tornado that loses copies in your house won't effect the bank at all. Even hurricanes are unlikely
+to destroy your safe-deposit box backups, unless there's water damage. Even an earthquake might not destroy
+your backups, although a 7.0 quake a few miles from both you and the bank is likely to render the bank
+structure uninhabitable, which means it will be a considerable time until you're allowed into the bank
+to retrieve your box's contents.</p>
+
+<h2>What to Look For In a Safe Deposit Box</h2>
+<p>First, it must be big enough to house several/many optical discs wrapped in paper sleeves
+and rubber banded together. As mentioned before, extra credit if it can accommodate them standing up,
+because that's best for long term storage.</p>
+
+<p>For gosh sakes, get a box as high up off the ground as possible, to avoid damage from flood situations.
+You know usual flood levels in your area: Get one a lot higher off the ground than that.</p>
+
+<p>Try to find out about the bank's climate control. We know that during the day they keep it comfortable
+for humans, which is great for optical media, but what happens at night? Do they turn off the air condition
+and let the bank's temperature rise to the ambient temperature outside, with the attendant humidity? This
+doesn't necessarily disqualify a bank: My office is frequently without air conditioning and gets into the 90's
+with Florida humidity, yet my CD backups from 1999 still restore. I'm just saying, all other things being equal,
+cool is better, especially if you're forced to store your optical media lying on their side.</p>
+
+<p>Find out how the bank handles safe deposit boxes so you can evaluate the likelihood of a bank robber
+taking your backups. Of course, the bank robber is looking for other stuff, but in the process of finding out
+what's in your box, he might leave your backups where they can be found by others.</p>
+
+
+<p>A safe deposit box costs somewhere between $50 and $200/year for a reasonably sized box. When viewing
+boxes for possible rental, bring a stack of optical discs, in paper sleeves, rubber-banded together. The box
+you rent should easily accommodate them. Extra credit if they can be accommodated in a standing position
+so there's less likelihood of warping. If the cost seems exorbitant, consider what it would cost you if you
+lost data with no modern backup, or if a badguy came into possession of one of your unencrypted backups.</p>
+
+
+
+<h2>Maintaining Your Safe Deposit Box</h2>
+<p><strong>Don't lose either key!</strong> Even if the bank doesn't insist on drilling and installing
+a new lock with the loss of only one key, if you've lost one key, someone else has it, and if they can
+find out the bank and do a little pretexting, they can walk out with your backups. Never carry your 
+safe deposit key on your normal key ring. Have it on a different ring, with an easily identifyable
+key ring. Carry it only when going to the bank to use your safe deposit box. Don't keep both safe
+deposit box keys on the same key-ring: You might need the second one to retrieve your backups if
+the first one is lost or stolen. Keep both your safe deposit keys in a safe, secure, <em>known</em>
+place. The only valid use of your second key is to immediately retrieve your valuables upon discovery
+of a lost first key.</p>
+
+<p>Here's what to keep in your safe deposit box: Backup discs, a few extra paper sleeves, and a few extra
+rubber bands. Don't keep a marker pen in there: If it leaks it could ruin your backups. If you need a marker
+pen for your box-stored backups and don't have
+a marker pen, ask the bank personnel for it, and if they don't have one, buy one.</p>
+
+
+
+<p class="endline">Steve Litt is available to select clients to personally teach the <a href="http://www.troubleshooters.com/utp/tcourses.htm">Universal Troubleshooting Process Course</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="the_great_backup_shred_of_2014">The Great Backup Shred of 2014</h1>
+<p class="byline">by Steve Litt</p>
+
+<p>So here I was, sitting with boxes of optical disc backups dating all 
+the way back to December 31, 1998, every
+one of them unencrypted. These backups would have filled three safe 
+deposit boxes costing $75/year each. No problem: I kept one or two
+backups from each year, and the rest went into my industrial strength 
+shredder. What was left took up less than 1/3 of
+the room in my safety deposit box.</p>
+
+<p class="endline">Steve Litt is the author of <a href="http://www.troubleshooters.com/bookstore/tsjustfacts.htm">Troubleshooting: Just the Facts</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="he_who_laughs_last">He Who Laughs Last</h1>
+<p class="byline">by Steve Litt</p>
+
+<p>I've taken so much grief for my backup beliefs. And man, don't people get judgmental:</p>
+
+<ul>
+<li>Recordable optical media doesn't last long. You'd know that if you bothered to study.</li>
+<li>If you want good, reliable backup, you need tape, not that recordable optical media you use.</li>
+<li>Iso9660 is already a container, and you don't need another one. You shouldn't (pkzip | tgz) your files, because
+one bad bit renders the whole backup useless.</li>
+<li>Restoring files inside a tarball is too inconvenient. You should back up as individual files. If you really want proof 
+that the files are as-written, give every file its own md5sum file. <ul>
+<li>Editors Note: Yeah, sounds like a great idea: What could <strong>possibly</strong> go wrong!</li>
+</ul></li>
+<li>Y2K is over. Use cloud backup.</li>
+<li>Don't use your home-grown shellscripts based on <span class="code">rsync</span>. Use &lt;name of expensive
+backup software&gt;.</li>
+<li>Backup isn't your core competency. Instead of wasting your time doing it, let professionals do it.</li>
+</ul>
+
+<p>Time brings certain clarity. On the night of the <a href="#the_great_backup_shred_of_2014">Great Backup Shred of 2014</a>
+ I tested
+bunches of optical media backups, dated 1998 through 2013. Each backup 
+disk had tarballs (well, the older ones had .zip files), and each
+had md5sums for the tarballs or zip files. So a simple shellscript could
+ test them for accuracy. I tested about one backup per year in that 
+period, with several in 2011 and 2012 for reasons I'll explain later.</p>
+
+<p>The results made the naysayers look silly. Every CD backup, and every DVD backup, tested out perfectly. Not one bit flipped
+in any file on any of them.</p>
+
+<p>The Blu-ray backups weren't quite as robust. In fact, every single 
+Blu-ray from the batch of Optical Quantum 4x BDRs I bought two or three
+years ago failed. In fact, with each one, looking at the surface on the 
+back, you could see with naked eyes that they'd lost color in various 
+spots.
+The corruption was evident to the naked eye, and of course trying to 
+mount them proved the defect. The following
+images are the front and back of one of these Optical Quantum discs: If 
+you want to see either image full-size, just
+click on the image.</p>
+
+<div style="" align="left">
+<a href="http://www.troubleshooters.com/lpm/201408/images/optquant_obverse.jpg"><img src="August%202014%20Linux%20Productivity%20Magazine:%20Encrypting%20Optical%20Backup%20Discs_files/optquant_obverse.jpg" alt="Obverse of Optical Quantum disc" height="20%" width="20%"></a>
+
+<a href="http://www.troubleshooters.com/lpm/201408/images/optquant_reverse.jpg"><img src="August%202014%20Linux%20Productivity%20Magazine:%20Encrypting%20Optical%20Backup%20Discs_files/optquant_reverse.jpg" alt="Reverse of Optical Quantum disc" height="20%" width="20%"></a>
+</div>
+
+<p>The scanned image of the reverse doesn't do the damage justice: You 
+can just barely see lighter patches on the scan. But looking at it with 
+the naked eye, you can't miss it.</p>
+
+<p>Meanwhile, stored in the same box, in the same environment, from 
+roughly the same time period, were a couple Memorex
+Blu-Ray 4x BDR backups. Both mounted and tested perfectly. Read the 
+feedback for any Blu-Ray BDR media, and you'll find
+there's a lot of true junk out there. Believe it! As I remember, half 
+those Optical Quantum BDRs coastered right out of the box.
+Now, two years later, the remainders are coasters. Develop your own 
+preferences in Blu-ray media. I'm going to try to keep buying
+the blue colored Memorex for awhile. I don't know if the blue color on 
+the obverse of the Memorex discs 
+helped protect the disc from whatever degenerated the Optical Quantums, 
+but until I know otherwise, I think I'll stick to Blu-Ray discs
+with dark colored obverses.</p>
+
+<p>Anyway, the main thing I wanted to say is that all those tape and cloud afficianados who declared optical media
+to be fragile and quick to degrade were proven wrong. Except for the Optical Quantum media, everything came through with
+flying colors.</p>
+
+<p>And all those guys, over all those years, acting like I was some kind
+ of fool for tarballing my directories, md5ing the tarballs, 
+and then storing the tarballs and md5's on the disc, who were soooo 
+worried that one flipped bit would render the backup useless?
+Well, there were no flipped bits. My 1998 backups are accessible as the 
+ones I did last night. And with tools like <span class="code">file
+roller</span>, just as accessible for restoring just a few files.</p>
+
+<p class="endline">Steve Litt is the author of <a href="http://www.troubleshooters.com/bookstore/key_excellence.htm">The Key to Everyday Excellence</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="bluray_backup_review">Blu-ray Backup Review</h1>
+<p class="byline">by Steve Litt</p>
+<p>For details of Blu-ray backup, see my <a href="http://www.troubleshooters.com/linux/blu-ray-backup.htm">Backing Up to Blu-Ray</a> page.
+The page you're now reading is just a review.</p>
+
+<p>Blu-ray backups must be done via a UDF filesystem, not an iso9660 filesystem, 
+because files in an iso9660 must be 4.2GB or less. If you back up like I do, backing
+up tarballs, one of those tarballs could very easily exceed 4.2GB.</p>
+
+<p>UDF has a much larger limitation: 16Extabytes, which is the same as 
+16 Billion GB. In other words, with today's commodity hardware, that's no limit at all, and 
+won't be for a decade or more. As of the summer of 2014, the GNU/Linux OS supports all
+UDF versions from 1.02 through 2.60. The reason I mention only Linux is that the
+crypto method I discuss later in this document is Linux-only anyway.</p>
+
+<p>Burning a Blu-ray goes something like this:</p>
+<ol>
+	<li><span class="code">truncate -s $imagesize  $udffile</span>. Note that $imagesize should
+	be a little smaller than the Blu-ray specified 25GB (25,000,000,000 bytes), to make up for
+	various metadata. I use 24500M for <span class="code">$imagesize</span>.<ul>
+	<li>I use <span class="code">truncate</span>, not time consuming <span class="code">dd</span>.
+	I don't care whether my newly formed UDF filesystem will have random bytes, zeros, or
+	anything else. I <em>do</em> care about saving the couple minutes
+	dd would take.</li>
+</ul></li>
+	<li><span class="code">sudo mkudffs $udffile</span></li>
+	<li><span class="code">mount -o loop $udffile $mountpoint</span></li>
+	<li><span class="code">sudo chown yourid.yourgroup $mountpoint</span></li>
+	<li>Treat <span class="code">$mountpoint</span> like any other directory, and
+	write your backup files to it.</li>
+	<li><span class="code">sudo umount $udffile</span></li>
+	<li>Label and insert Blu-ray disc</li>
+	<li><span class="code">growisofs -dvd-compat -Z $blu_device=$udffile</span><ul>
+	<li>The <span class="code">-dvd-compat</span> option closes the disc and makes it
+	non-appendable, which is what you want on a backup disc. You want a backup disc read-only.</li>	
+	</ul></li>
+	<li>Wait a long time for the burn to complete. The drive ejects when finished.</li>
+	<li>You're done with your burn.</li>
+	<li>From now on, <span class="code">mount $blu_device $mountpoint</span> mounts the Blu-ray.</li>
+	<li>At this point, do whatever check you do to make sure the backup is accurate.</li>
+</ol>
+
+<p>The preceding describes the making of a non-encrypted Blu-ray. Making a LUKS encrypted
+Blu-ray requires a rearranged process, where you loop mount the file, luksOpen the loop
+device into a mapper device, and UDF format the mapper device. This is described later in 
+this document.</p>
+
+<p class="endline">Steve Litt has written a large collection of <a href="http://www.troubleshooters.com/linux/lyx/">Lyx documentation</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="luks_intro">LUKS Intro</h1>
+<p class="byline">by Steve Litt</p>
+
+<p>LUKS stands for "Linux Unified Key Setup." As the name implies, LUKS is Linux-only. You can't
+read or write LUKS on Windows, BSD or Mac, unless there's some software bolt-on to let you do
+so, and if there is, I don't know about it. LUKS also has a C API, but that's beyond the scope
+of this document.</p>
+
+<p>LUKS has a security frailty for those not using the correct cipher, as described in Jakob Lell's 
+<a href="http://www.jakoblell.com/blog/2013/12/22/practical-malleability-attack-against-cbc-encrypted-luks-partitions/">December 22, 2013</a> Blog entry.
+He proposes a solution, involving using the <span class="code">--cipher</span> option, 
+in the <a href="http://www.jakoblell.com/blog/2013/12/22/practical-malleability-attack-against-cbc-encrypted-luks-partitions/#toc-4">solution</a> section of that blog entry. Although supposedly
+<span class="code">cryptsetup</span> 1.6 defaults to the secure <span class="code">aes-xts-plain64</span>
+cipher, for the next few years after 2014, or at least until you hear there's a better
+alternative, I'd use the <span class="code">--cipher aes-xts-plain64</span> option, so your command
+should look something like the following:</p>
+
+<pre class="code">sudo cryptsetup luksFormat --cipher aes-xts-plain64 $udfloop</pre>
+
+<p>Referring to the preceding command, <span class="code">$udfloop</span> is what
+was set up by a previous <span class="code">losetup</span> command, which
+is described later in this document.</p>
+
+<p class="endline">Steve Litt is the author of <a href="http://www.troubleshooters.com/bookstore/tsjustfacts.htm">Troubleshooting: Just the Facts</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="data_obliteration_danger">Data Obliteration Danger</h1>
+<p class="byline">By Steve Litt</p>
+
+<div class="danger">
+<p class="title">Danger Will Robinson!</p>
+<p>Command <span class="code">sudo cryptsetup luxFormat $devicename</span> permanently and forever
+destroys all data on whole partitions or drives or loop mounted files, or whatever is hooked
+to <span class="code">$devicename</span>. If you accidentally LUKS format the wrong device,
+or even the wrong loopback device (<span class="code">/dev/loop0</span> instead of <span class="code">/dev/loop1</span>), you will lose all data hooked to that device. Imagine if you
+accidentally did it to <span class="code">/dev/hda</span>.</p>
+
+<p>* Never cut and paste LUKS related commands or code from this document.</p>
+<p>* Never run a LUKS format until you totally understand what you're doing.</p>
+<p>* Run the <span class="code">sudo losetup -a</span> command to see exactly what 
+loopback devices are hooked to what data containers.</p>
+<p>* If this is all new to you, I suggest you perform your experiments on an experimental
+machine that won't create tragedy if all its data and partitioning get wiped out.</p>
+<p>Let's be careful out there!</p>
+</div>
+
+<p>I'm serious. Fully back up your data (with an unencrypted backup) before attempting any of
+this, and triple-check your commands, especially <span class="code">cryptsetup&nbsp;luksFormat</span>, before running them. If possible, use an experimental computer for this stuff. You can experiment using
+DVDs until you have it perfect, and then make the necessary changes to do it on Blu-rays, possibly
+on a different machine. Another benefit of doing it with DVDs first is that DVDs cost a quarter 
+apiece, not two bucks apiece.</p>
+
+<p>Be careful!</p>
+<p class="endline">Steve Litt is the author of several <a href="http://www.troubleshooters.com/bookstore/">human performance books</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="luksbluray_objective">LUKS/Blu-ray Objective</h1>
+<p class="byline">By Steve Litt</p>
+
+<p>The details of recording encrypted data to a Blu-ray can seem
+daunting at first. Before discussing those details, let's summarize what our final objective looks
+like. Please view the following diagram, and if it's too small for
+your vision, please click
+it for a larger version:</p>
+
+<a target="_blank" href="http://www.troubleshooters.com/lpm/201408/images/luks_img.svg"><img src="August%202014%20Linux%20Productivity%20Magazine:%20Encrypting%20Optical%20Backup%20Discs_files/luks_img.svg" alt="Diagram of 3 levels" width="350px"></a>
+
+<p>Starting from the inside out, we have a bunch of files in a UDF filesystem, which itself is
+in a LUKS encrypted filesystem, which itself is inside the image file that will be laid down on
+your Blu-ray disc using the <span class="code">growisofs</span> program. Take a moment to understand,
+the files are not being encrypted in place, they're simply inside a UDF filesystem that itself
+is inside a LUKS encrypted filesystem. In other words, to see the UDF filesystem at all, you first
+need to use a password to open the LUKS encrypted filesystem inside the image file.</p>
+
+<div class="note">
+<p class="title">Note:</p>
+<p>You might think you could put an ext4 filesystem instead of
+UDF inside the LUKS filesystem, but I tried that and it doesn't work.</p>
+</div>
+
+<p>The diagram explains a lot of things. It explains why you need
+to LUKS format before UDF formatting: Your UDF is <em>inside</em> the LUKS.</p>
+
+<p>It explains why, if you erroneously burn media with a file that has an ext4 
+filesystem instead of a UDF filesystem inside the LUKS filesystem, you'll be able to 
+input the password just fine, and only after the correct password is entered will it error
+out because ext4 isn't compatible with optical media. By the way, the error message looks
+like the following:</p>
+
+<pre class="code">slitt@mydesq2:~$ sudo mount /dev/mapper/dvd /mnt/dvd
+mount: block device /dev/mapper/dvd is write-protected, mounting read-only
+mount: wrong fs type, bad option, bad superblock on /dev/mapper/dvd,
+       missing codepage or helper program, or other error
+       In some cases useful info is found in syslog - try
+       dmesg | tail  or so
+slitt@mydesq2:~$
+</pre>
+
+<p>Once again, looking at the diagram...</p>
+<a target="_blank" href="http://www.troubleshooters.com/lpm/201408/images/luks_img.svg"><img src="August%202014%20Linux%20Productivity%20Magazine:%20Encrypting%20Optical%20Backup%20Discs_files/luks_img.svg" alt="Diagram of 3 levels" width="350px"></a>
+
+<p>Keep in mind the order of things, as recited from inside out, in the following list:</p>
+
+<ol>
+<li>The files you're backing up are inside a UDF filesystem.</li>
+<li>The UDF filesystem is inside a LUKS encrypted filesystem.</li>
+<li>The LUKS encrypted filesystem is inside the image file.</li>
+</ol>
+
+<p>Now let's say the same thing from the outside in, in the following list:</p>
+<ol>
+<li>The image file contains a LUKS encrypted filesystem.</li>
+<li>The LUKS encrypted filesystem contains a UDF filesystem.</li>
+<li>The UDF filesystem contains the files you're backing up.</li>
+</ol>
+
+<p>Keeping the diagram in mind, and keeping in mind that a loop device is the only way to format a filesystem inside a file,
+and that the LUX command <span class="code">cryptsetup&nbsp;luksOpen</span> results in a mapper
+device, you can understand why burning proceeds in the following
+order:</p>
+
+<div class="note">
+<p class="title">Warning:</p>
+<p>Don't really do the following steps, because they don't have enough damage control code!
+If you choose to perform these steps, evaluate each one in the context
+of your system to see whether it needs changing. Be careful!</p>
+</div>
+
+<ol>
+<li><span class="code">imgloop=`sudo losetup -f`</span> to find the next available loop device.</li>
+<li><span class="code">sudo losetup $imgloop $imgfile</span>, to associate the image
+file with a loop device.</li>
+<li><span class="code">sudo cryptsetup luksFormat --cipher aes-xts-plain64 $imgloop</span> to
+LUKS format the loop device associated with the image file, thereby putting a LUKS filesystem
+inside the image file. This step can cause catastrophic data loss if you do it to the wrong
+device! In this step you'll need to confirm your intention, and if you're not sure, say no and abort.
+Also, this is the step in which you'll input the password, and then
+re-input it for confirmation.</li>
+<li><span class="code">sudo luksOpen $imgloop mybluray</span> to open the loop device hooked
+to the image file, which now contains a LUKS filesystem. You'll need to input the password,
+and then the decrypted LUKS filesystem is available as <span class="code">/dev/mapper/mybluray</span>.
+Keep in mind that the LUKS filesystem currently contains nothing, so
+a UDF filesystem must be formatted inside of it.</li>
+<li><span class="code">sudo mkudffs /dev/mapper/mybluray</span> to put a UDF filesystem inside
+the LUKS filesystem, via the <span class="code">/dev/mapper/mybluray</span> device.<ul>
+<li>This step can be catastrophic if <span class="code">/dev/mapper/myblueray</span> isn't associated with what
+you think it's associated with. If in doubt, check with <span class="code">sudo&nbsp;losetup&nbsp;-a</span></li>
+</ul></li>
+<li><span class="code">sudo mount /dev/mapper/mybluray /mnt/udf</span> to make
+<span class="code">/dev/mapper/mybluray</span> available as directory
+<span class="code">/mnt/udf</span>.</li>
+<li>Copy all files to back up into <span class="code">/mnt/udf</span></li>
+<li>Note that the following steps back out of the preceding steps, and then
+you'll finally actually burn the media.</li>
+<li><span class="code">sudo umount /mnt/udf</span> to umount the directory and close
+the UDF filesystem.</li>
+<li><span class="code">sudo cryptsetup luksClose /dev/mapper/mybluray</span> to
+close the LUKS encrypted filesystem.</li>
+<li><span class="code">sudo losetup -d $imgloop</span> to dissociate the loop device
+from the image file and free the loop device for other work.</li>
+<li><span class="code">growisofs -dvd-compat-Z /dev/dvd=$imgfile</span> to burn the file containing
+the LUKS filesystem containing the UDF filesystem containing the files being backed up,
+to the media in /dev/dvd <ul>
+<li>The <span class="code">-dvd-compat</span> closes the disc after recording, and makes it
+unappendable, which is what you want for a backup disc.</li>
+</ul></li>
+</ol>
+
+
+<p>Please remember, the preceding procedure is mainly for your understanding and to relate
+to the diagram, <em>not</em> to actually perform. If you were going to actually do this, you'd
+need additional steps to verify that you're really LUKS formatting what you think you are.</p>
+
+<a target="_blank" href="http://www.troubleshooters.com/lpm/201408/images/luks_img.svg"><img src="August%202014%20Linux%20Productivity%20Magazine:%20Encrypting%20Optical%20Backup%20Discs_files/luks_img.svg" alt="Diagram of 3 levels" width="350px"></a>
+
+<p>Keep this diagram in mind as you go through the details, because it explains the order of
+the commands you execute.</p>
+
+<p class="endline">Steve Litt is the former owner of
+Steve's Stereo Repair, a business that transitioned into Steve Litt Business Systems and
+then Troubleshooters.Com. 
+Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="handy_troubleshooting_tools_for_encrypted_backups">Handy Troubleshooting Tools For Encrypted Backups</h1>
+<p class="byline">By Steve Litt</p>
+
+<p>Please review the following diagram before reading about the tools:</p>
+
+<a target="_blank" href="http://www.troubleshooters.com/lpm/201408/images/luks_img.svg"><img src="August%202014%20Linux%20Productivity%20Magazine:%20Encrypting%20Optical%20Backup%20Discs_files/luks_img.svg" alt="Diagram of 3 levels" width="350px"></a>
+
+<p>You need tools to look at the loop device. You need to look at the image file and
+see whether it contains a valid LUKS filesystem. You need to see whether the loop device
+is connected to a mapper device, and if so, is the mapper device mounted to a directory?
+LUKS encrypted backup discs can look very much like black boxes. The following tools
+enable you to look inside and see what's going on.</p>
+
+<ul>
+<li><span class="code">sudo losetup -a</span></li>
+<li><span class="code">sudo udisks --show-info /dev/dvd</span></li>
+<li><span class="code">sudo cryptsetup luksDump /dev/dvd</span></li>
+<li><span class="code">sudo cryptsetup luksDump /volatile/dvd.img</span></li>
+<li><span class="code">sudo cryptsetup luksDump /dev/loop0</span></li>
+<li><span class="code">ls -l /dev/mapper</span></li>
+<li><span class="code">mount | grep mapper</span></li>
+</ul>
+
+<h2><span class="code">sudo losetup -a</span></h2>
+<p><span class="code">sudo losetup -a</span> is how you glance at all loop devices. If you lose track of which loop device
+is assigned to what file, you use this command to find out. Here's an example:</p>
+
+<pre class="code">slitt@mydesq2:~/luksudf$ <span class="user">sudo losetup -a</span>
+/dev/loop0: [0819]:51904515 (/scratch/volatile/dvd.img)
+/dev/loop1: [0819]:33554547 (/scratch/linuxinst/debian/debian-7.4.0-amd64-netinst.iso)
+/dev/loop5: [0819]:33554618 (/scratch/linuxinst/pcbsd/PCBSD9.1-x64-DVD.iso)
+slitt@mydesq2:~/luksudf$
+</pre>
+
+<p>As you can see, all currently used loop devices are listed right along with the files
+to which they refer.</p>
+
+<h2><span class="code">sudo udisks --show-info /dev/dvd</span></h2>
+<p><span class="code">sudo udisks --show-info /dev/dvd</span> is what
+you do if you want information on your optical drive or a disc that's
+in it. It tells you almost everything:</p>
+
+<pre class="longcode">slitt@mydesq2:~/luksudf$ <span class="user">udisks --show-info /dev/dvd</span>
+Showing information for /org/freedesktop/UDisks/devices/sr0
+  native-path:                 /sys/devices/pci0000:00/0000:00:11.0/host5/target5:0:0/5:0:0:0/block/sr0
+  device:                      11:0
+  device-file:                 /dev/sr0
+    presentation:              /dev/sr0
+    by-id:                     /dev/disk/by-id/ata-TSSTcorp_CDDVDW_SH-224DB_R9636YAF2002E0
+    by-id:                     /dev/disk/by-uuid/c26be883-0f2a-4a09-b532-b9800d431e59
+    by-path:                   /dev/disk/by-path/pci-0000:00:11.0-scsi-5:0:0:0
+  detected at:                 Fri 11 Jul 2014 12:51:52 PM EDT
+  system internal:             0
+  removable:                   1
+  has media:                   1 (detected at Sun 13 Jul 2014 08:44:54 PM EDT)
+    detects change:            1
+    detection by polling:      1
+    detection inhibitable:     1
+    detection inhibited:       0
+  is read only:                0
+  is mounted:                  0
+  mount paths:             
+  mounted by uid:              0
+  presentation hide:           0
+  presentation nopolicy:       0
+  presentation name:           
+  presentation icon:           
+  automount hint:              
+  size:                        4600004608
+  block size:                  2048
+  job underway:                no
+  usage:                       crypto
+  type:                        crypto_LUKS
+  version:                     1
+  uuid:                        c26be883-0f2a-4a09-b532-b9800d431e59
+  label:                       
+  luks device:
+    holder:                    /org/freedesktop/UDisks/devices/dm_2d0
+  optical disc:
+    blank:                     0
+    appendable:                0
+    closed:                    1
+    num tracks:                1
+    num audio tracks:          0
+    num sessions:              1
+  drive:
+    vendor:                    TSSTcorp
+    model:                     TSSTcorp CDDVDW SH-224DB
+    revision:                  SB01
+    serial:                    R9636YAF2002E0
+    WWN:                       
+    detachable:                0
+    can spindown:              0
+    rotational media:          Yes, unknown rate
+    write-cache:               unknown
+    ejectable:                 1
+    adapter:                   /org/freedesktop/UDisks/adapters/0000_3a00_3a11_2e0
+    ports:
+      /org/freedesktop/UDisks/adapters/0000_3a00_3a11_2e0/host5
+    similar devices:
+    media:                     optical_dvd_plus_r
+      compat:                  optical_cd optical_cd_r optical_cd_rw optical_dvd optical_dvd_plus_r optical_dvd_plus_r_dl optical_dvd_plus_rw optical_dvd_r optical_dvd_ram optical_dvd_rw
+    interface:                 scsi
+    if speed:                  (unknown)
+    ATA SMART:                 not available
+slitt@mydesq2:~/luksudf$
+</pre>
+
+<p>A few words about the preceding. It tells you that no matter what your system calls it, 
+this drive is really <span class="code">/dev/sr0</span>. That's good information to have.
+</p>
+
+<p>You'll learn whether it has media in it. From my research (I created a coaster by scribbling
+marker pen all over the writing surface of a CD), coasters register as 0 for "has media", as well
+as an open or empty tray, or a disc that hasn't had time to be recognized. After complete hardware
+loading, my research tells me all empty and legitimately written-to discs register as 1
+for "has media".</p>
+
+<p>"Usage" and "type" show how it's formatted, even if your OS can't do anything with the
+formatting.</p>
+
+<p>Be careful of "is mounted" and "mount paths", because they still read zero after you use
+<span class="code">sudo cryptsetup&nbsp;luksOpen&nbsp;/dev/dvd&nbsp;myluksdisc</span>. Also,
+be aware that "size" refers to the size of what got recorded, not the capacity of the media.
+Thus, if you burn a tiny 14MB Linux ISO to a DVD, "size" will be around 14,000,000. But if
+you put just a few files in a 4.7GB LUKS-&gt;UDF file and burn that, it will be more like
+4,600,000,000. Also note that the size revealed in this command has no commas: I put them
+in for your easy interpretation.</p>
+
+<p>Notice that both "tracks" and "sessions" are 1, while "closed" is 1 and "appendable" is
+0. If you had not used the <span class="code">-dvd-compat</span> argument in your
+<span class="code">growisofs</span> command, "tracks" and "sessions" would have been
+2, "closed" would have been 0, and "appendable" would have been 1, none of which is something
+you want on a backup disc. You want a backup disc totally read-only, no append, so that no 
+software or malicious person or agent can finesse bad data onto your backup disc.</p>
+
+<p><span class="code">udisks&nbsp;--show-info&nbsp;/dev/dvd</span> is useful when placed in
+a loop with grep to figure out when the disc has reached a certain status in loading. Looping
+until "has media" registers "1" is great for finding out when it's loaded at all. If you're
+dealing with a known LUKS encrypted disc, waiting for it to register "crypto_LUKS" in the
+"type" line is what you want to do before attempting to use <span class="code">cryptsetup</span>
+on it.</p>
+
+<h2><span class="code">sudo cryptsetup luksDump /dev/dvd</span></h2>
+
+<p><span class="code">sudo cryptsetup luksDump /dev/dvd</span> gives you the LUKS specific information about a loaded disc. Of special
+interest are the "Cipher name" and "Cipher mode" lines. If your "Cipher mode" line says
+<span class="code">cbc-essiv:sha256</span>, you have an insecure disc that a person with
+physical possession of could crack rather easily. What you want to see in the "Cipher mode"
+line is probably "xts-plain64", at least in 2014.</p>
+
+<p>The following is the output of this command:</p>
+
+<pre class="longcode">slitt@mydesq2:~$ <span class="user">sudo cryptsetup luksDump /dev/dvd</span> 
+LUKS header information for /dev/dvd
+Version:        1
+Cipher name:    aes
+Cipher mode:    xts-plain64
+Hash spec:      sha1
+Payload offset: 4096
+MK bits:        256
+MK digest:      bc ef 66 cf 82 b8 6e c4 aa da 32 6c 1b 47 ba 96 f7 69 85 d0 
+MK salt:        97 76 14 df 61 5f 3a 2a 0b ea 79 be 53 0d ee 99 
+                44 00 28 f2 a5 40 70 40 4d 6e 46 ca 08 0a c2 1f 
+MK iterations:  50375
+UUID:           c26be883-0f2a-4a09-b532-b9800d431e59
+Key Slot 0: ENABLED
+    Iterations:             201856
+    Salt:                   4e 13 e5 73 78 e5 a0 2d 7c 70 68 ce c3 1c a8 12 
+                            1b 67 a4 a4 51 1e 21 e2 dc c8 be 6e 2b 37 8e 9a 
+    Key material offset:    8
+    AF stripes:             4000
+Key Slot 1: DISABLED
+Key Slot 2: DISABLED
+Key Slot 3: DISABLED
+Key Slot 4: DISABLED
+Key Slot 5: DISABLED
+Key Slot 6: DISABLED
+Key Slot 7: DISABLED
+slitt@mydesq2:~$ 
+
+</pre>
+
+<h2><span class="code">sudo cryptsetup luksDump /volatile/dvd.img</span></h2>
+<p><span class="code">sudo cryptsetup luksDump /volatile/dvd.img</span>
+does the same thing for an image file that
+<span class="code">sudo&nbsp;cryptsetup&nbsp;luksDump&nbsp;/dev/dvd</span> does
+for a disc, and is used the same way.</p>
+
+<h2><span class="code">sudo cryptsetup luksDump /dev/loop0</span></h2>
+<p><span class="code">sudo cryptsetup luksDump /dev/loop0</span>
+does the same thing for a loop device that
+<span class="code">sudo&nbsp;cryptsetup&nbsp;luksDump&nbsp;/dev/dvd</span> does
+for a disc, and is used the same way.</p>
+
+<h2><span class="code">ls -l /dev/mapper</span></h2>
+<p><span class="code">ls -l /dev/mapper</span> is how you get an idea of your mapped devices, to see whether a 
+<span class="code">cryptsetup luksOpen</span> or <span class="code">cryptsetup 
+luksClose</span> command succeeded or failed. It also helps when you forgot the
+"name" argument you passed to <span class="code">cryptsetup luksOpen</span>. It's a 
+quick command, with quick results, done by a normal user.</p>
+
+<h2><span class="code">mount | grep mapper</span></h2>
+<p><span class="code">mount | grep mapper</span> answers this
+question: Did you actually get that LUKS mapper device mounted, and if so, where?
+I use it a lot when I need to see where I need to start in closing down
+a LUKS mounted device.</p>
+
+
+<p class="endline">Steve Litt is the author of <a href="http://www.troubleshooters.com/bookstore/key_excellence.htm">The Key to Everyday Excellence</a>, which includes hyper-productivity
+tools such as Scan and Exploit, two different skill transfer processes, and a process factory
+process with which you can make a process to do anything you want. 
+Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="shellscripts_for_encrypted_backup">Shellscripts For Encrypted Backup</h1>
+<p class="byline">By Steve Litt</p>
+
+<div class="danger">
+<p class="title">Disclaimer</p>
+<p>This article contains a lot of scripts, many of which will cause extreme data loss,
+possibly to the point of failure to boot, if they're not correctly modified to your
+system, or if they're used wrong, or if something bad happens. You
+must not use these
+scripts, modified or unmodified, unless you absolve Steve Litt of all responsibility for
+your use of these scripts, and you agree to use these scripts at your own risk.</p>
+</div>
+
+<p>If you've understood and assimilated the information in 
+<a href="#luksbluray_objective">LUKS/Blu-ray Objective</a>, you can burn encrypted
+Blu-ray media. That's not good enough.</p>
+
+<p>Backup is something you do every day, and backup to media is something you probably do once
+a week. So you need to automate the process. This article gives you a <strong>starting
+point</strong> for doing so. Don't use them as is, they're too dangerous as-is.
+Instead, you'll need to build in more safety procedures and error handling,
+but these scripts are a starting point.</p>
+
+<p>This set of shellscripts are intended to reside in one directory, not on the path. 
+Keeping them in a single directory off the path makes them a sort of self-contained
+system, reducing the likelihood of their being run accidentally, and
+the likelihood that they call the wrong include file. They
+consist of the following:</p>
+<ul>
+<li>An <span class="code">initluks.include</span> script to set several environment variables
+used by the other scripts. This is sourced by other scripts and isn't
+run on its own.</li>
+<li>A <span class="code">make_luks_udf.sh</span> script for creating an image file containing a LUKS encrypted filesystem containing
+a UDF filesystem, with the UDF filesystem mounted and ready to copy backup files into.</li>
+<li>A <span class="code">close_luks_udf.sh</span> script
+for closing your opened imagefile-&gt;LUKS-&gt;UDF-&gt;BackupFiles tree.</li>
+<li>A <span class="code">reopen_luks_udf.sh</span> script to reopen an existing 
+luks-&gt;udf formatted file for reading and writing.</li>
+<li>You may or may not want a script to copy files to the opened and mounted
+luks-&gt;udf filesystem. Personally I prefer doing the copy commands manually.</li>
+<li>A <span class="code">md5check.sh</span> script to check all
+<span class="code">.tgz</span> files against their
+same named <span class="code">.md5</span> files, in order to check the accuracy of <span class="code">.tgz</span> files years after the fact.</li>
+<li>A <span class="code">burn_disc.sh</span> script to burn an optical disc from a previously
+made file containing a LUKS encrypted filesystem, which itself contains a UDF filesystem,
+which contains backup files.</li>
+<li>A <span class="code">open_luks_disc.sh</span> to open and mount a luks-&gt;udf encoded disc</li>
+<li>A <span class="code">close_luks_disc.sh</span> to unmount, close and eject
+a luks-&gt;udf encoded disc</li>
+</ul>
+
+<p>All of the scripts listed above, except <span class="code">initluks.include</span>,
+and <span class="code">md5check.sh</span>, use the final argument as the disc
+type (<span class="code">blu</span> 
+or <span class="code">dvd</span>), if the final argument is one of those two values.
+Otherwise, it's used as just another argument, and the script queries you for the
+disc type. To see how the scripts do this, look at the code in 
+<span class="code">initluks.include</span>.</p>
+
+<h2><span class="code">initluks.include</span></h2>
+<p>Usage: <span class="code">source ./initluks.include</span>, used only inside
+other scripts.</p>
+<p>This partial script is included in all the other scripts. 
+Its purpose is to set all the environment
+variables to be used by the other scripts, as well as to run some tests for safety
+purposes (but you should probably devise even more safety-related tests), and
+to see if <span class="code">$disctype</span> is set to either <span class="code">dvd</span>
+or <span class="code">blu</span>, and otherwise, query the user for one of those, and
+set <span class="code">$disctype</span> accordingly. A code listing for
+<span class="code">initluks.include</span> follows:</p>
+
+<pre class="longcode">#!/bin/false
+# Preceding shebang helps prevent running on its own.
+# But doesn't cause the parent's source cmd to fail
+
+echo ===== Begin initbk.include ====== 1&gt;&amp;2
+
+#### testing must be either true or false ####
+#### Bad things, like extreme data loss, happen if it's wrong. ####
+
+#### DISC MOUNTING VARS ####
+testing=true
+if $testing; then
+   discdev=/dev/dvd
+   disc_mountpoint=/scratch/mnt/disc
+else
+   discdev=/dev/dvd
+   disc_mountpoint=/mnt/disc
+fi
+
+
+#### INITIAL ENV VARS ####
+exe_dir=`pwd`
+mappername=luksimg
+mapperdev="/dev/mapper/$mappername"
+discmappername=luksdisc
+discmapperdev=/dev/mapper/$discmappername
+
+
+#### GET FINAL ARGUMENT ####
+argc=$#
+finalarg=${!argc}
+
+#### HANDLE A FINAL ARGUMENT DEFINING THE MEDIA, REMOVE FROM $newargs ####
+loopmore=true
+if test "$finalarg" == "dvd" || test "$finalarg" == "blu"; then
+	disctype=$finalarg
+	loopmore=false
+fi
+
+#### GET MEDIA TYPE IF NOT ALREADY SET ####
+while   $loopmore; do
+	echo -n 'Choose dvd or blueray, (d or b)=&gt;'
+	read choice
+	choice=`echo $choice | cut -b 1`
+	if test $choice == 'b'; then
+		loopmore=false
+		disctype=blu
+	elif test $choice == 'd'; then
+		loopmore=false
+		disctype=dvd
+	fi
+done
+
+#### SET $imgsize FROM $disctype ####
+imgsize=1KB
+if test $disctype == "blu"; then
+	imgsize=24500MB
+elif test $disctype == "dvd"; then
+	imgsize=4600MB
+else
+	echo "FATAL ERROR, WRONG disctype&gt;$disctype&lt;, ABORTING!" 1&gt;&amp;2
+	exit 1
+fi
+
+
+#### SET OTHER VARS ACCORDING TO TESTING OR NOT
+if $testing; then
+	imgfile=/scratch/volatile/$disctype.img
+	udfmountpoint=/scratch/mnt/udf
+else
+	imgfile=/scratch/volatile/$disctype.img
+	udfmountpoint=/mnt/udf
+fi
+echo =====  End  initbk.include ====== 1&gt;&amp;2
+</pre>
+
+<h2><span class="code">make_luks_udf.sh</span></h2>
+<p>Usage: <span class="code">./make_luks_udf.sh disctype</span>, where disctype is either
+<span class="code">blu</span> or <span class="code">dvd</span>.</p>
+<p>This script can be <strong>dangerous</strong>. It's the most potentially dangerous
+of all the scripts listed in this article, because it formats devices twice:
+Once for LUKS, and once for UDF. Be sure to correctly adapt it for your
+setup, and be sure to always correctly set the value of <span class="code">$testing</span>
+to either <span class="code">true</span> or <span class="code">false</span>.</p>
+
+<pre class="longcode">#!/bin/bash
+
+dirr=`dirname $0`
+cd $dirr
+
+#### SAFETY: ABORT ON FAILED source ./initluks.include ####
+source ./initluks.include
+result=$?
+if test "$result" == "0"; then
+	echo initluks.include ran successfully 1&gt;&amp;2
+elif test "$result" != "0"; then
+	echo FATAL ERROR: initluks.include failed to run 1&gt;&amp;2
+	echo " Probably a directory error, exiting..." 1&gt;&amp;2
+	exit 1
+elif test "$result" != "0"; then
+	echo FATAL ERROR: Unknown error trying to run initluks.include, exiting... 1&gt;&amp;2
+	exit 1
+fi
+
+##############################################################################################
+
+echo 1&gt;&amp;2
+
+#### SAFETY: ABORT ON EMPTY $exe_dir ####
+if test "$exe_dir" == ""; then
+	echo 1&gt;&amp;2
+	echo Error: No exec dir. Run through init script. 1&gt;&amp;2
+	echo 1&gt;&amp;2
+	exit
+fi
+
+#### SAFETY: ABORT IF NO EXECUTABLE make_luks_udf.sh IN CURRENT DIR ####
+if test -x ./make_luks_udf.sh; then
+	echo -n 1&gt;&amp;2
+else
+	echo 1&gt;&amp;2
+	echo Bad directory `pwd`, investigate!  1&gt;&amp;2
+	echo 1&gt;&amp;2
+	exit 1
+fi
+
+
+imgloop=`sudo losetup -f`
+result=$?
+if test "$result" != 0; then
+	echo FATAL ERROR, losetup -f failed with return code $result, aborting. 1&gt;&amp;2
+	exit 1
+fi
+
+echo Truncating $imgfile to size $imgsize 1&gt;&amp;2
+truncate -s $imgsize  $imgfile
+
+echo Doing losetup to loop $imgloop, file $imgfile 1&gt;&amp;2
+sudo losetup $imgloop $imgfile
+
+echo Doing cryptsetup luksFormat on loop $imgloop, the loop mount of $imgfile 1&gt;&amp;2
+echo Strongarming --cipher aes-xts-plain64, as per  1&gt;&amp;2
+echo http://www.jakoblell.com/blog/2013/12/22/practical-malleability-attack-against-cbc-encrypted-luks-partitions/#toc-4 1&gt;&amp;2
+
+#### SAFETY: WARN THE USER. ####
+mycommand="sudo cryptsetup luksFormat --cipher aes-xts-plain64 $imgloop"
+sudo losetup -j $imgloop
+echo 1&gt;&amp;2
+echo "WARNING: Next command is: $mycommand" 1&gt;&amp;2
+echo "$img loop file connection on next line:" 1&gt;&amp;2
+sudo losetup $imgloop
+echo "If the command is wrong it can cause data loss." 1&gt;&amp;2
+echo "If that command's not exactly what you want to do, either" 1&gt;&amp;2
+echo "Ctrl+C out right now, or type "no" when asked if it's OK." 1&gt;&amp;2
+echo
+$mycommand
+
+#### SAFETY: ABORT IF $imgloop NOT LUKS FORMATTED
+if ! sudo cryptsetup isLuks $imgloop; then
+	echo 1&gt;&amp;2
+	echo Quitting at User request. 1&gt;&amp;2
+	exit 1
+fi
+
+echo Doing cryptsetup luksOpen on loop $imgloop, as $mappername 1&gt;&amp;2
+sudo cryptsetup luksOpen $imgloop $mappername
+
+#### SAFETY: WARN THE USER. ####
+mycommand="sudo mkudffs $mapperdev"
+#sudo cryptsetup luksDump $mapperdev
+echo 1&gt;&amp;2
+echo "WARNING: Next command is: $mycommand" 1&gt;&amp;2
+echo "If the command is wrong it can cause data loss." 1&gt;&amp;2
+echo "If that command's not exactly what you want to do, either" 1&gt;&amp;2
+echo "Ctrl+C out right now, because you'll get no other opportunity not to UDF format $mapperdev." 1&gt;&amp;2
+echo "If you really want to do this, hit Enter." 1&gt;&amp;2
+read junk
+$mycommand
+
+#echo Chowning normal user $mapperdev 1&gt;&amp;2
+#sudo /d/exe_symlinks/chown.sh -R slitt.slitt $mapperdev
+
+echo Mounting $mapperdev to $udfmountpoint 1&gt;&amp;2
+sudo mount $mapperdev $udfmountpoint
+
+echo Chowning slitt.slitt $udfmountpoint 1&gt;&amp;2
+sudo /d/exe_symlinks/chown.sh slitt.slitt $udfmountpoint
+
+echo 1&gt;&amp;2
+echo Encrypted loop device is at $mapperdev or $imgfloop. 1&gt;&amp;2
+echo 1&gt;&amp;2
+
+echo Write files to $udfmountpoint 1&gt;&amp;2
+echo BE SURE TO UNDO THIS STUFF WITH close_luks_udf.sh $imgloop $disctype 1&gt;&amp;2
+##############################################################################################
+
+</pre>
+
+<p>This script asks you for the password three times: Two to input and
+confirm the password during LUKS formatting of the disc, and one to
+open it after it's been LUKS formatted.</p>
+
+<p>You'll be happier if you've already decided on the password before running this script. If you're
+experimenting with the script, feel free to use a small, totally insecure password (pass for 
+instance), because <span class="code">cryptsetup&nbsp;luksFormat</span> doesn't feed back
+its opinion of your password's security value. Needless to say, if you use a weak
+password, don't put any confidential data on it.</p>
+
+<p>This script ends with the LUKS-&gt;UDF filesystem mounted at a mountpoint defined in
+<span class="code">initluks.include</span>. The script tells you where to copy your
+backup files, and how to run <span class="code">close_luks_udf.sh</span> to close
+the UDF, close the mapped port, and dissociate the loop.</p>
+
+<h2><span class="code">close_luks_udf.sh</span></h2>
+<p>Usage: <span class="code">./close_luks_udf.sh loopdevice disctype</span>, where
+loopdevice is something like <span class="code">/dev/loop0</span>, and disctype is either <span class="code">blu</span> or <span class="code">dvd</span>.</p>
+<p>This script completely undoes what <span class="code">make_luks_udf.sh</span> did,
+except that the image file is still correctly formatted and presumably holding your
+backup files, and unless you've remembered to use the correct loop device as the
+command's first argument, the loop device will still be assigned to the image file. If this
+happens it's no big deal, because you can review all loop devices with the
+<span class="code">sudo&nbsp;losetup&nbsp;-a</span> command, and
+dissociate it with the <span class="code">sudo&nbsp;losetup&nbsp;-d
+loopdevice</span> command.</p>
+
+<p>The <span class="code">close_luks_udf.sh</span> script follows:</p>
+
+<pre class="longcode">#!/bin/bash
+
+dirr=`dirname $0`
+cd $dirr
+
+#### SAFETY: ABORT ON FAILED source ./initluks.include ####
+source ./initluks.include
+result=$?
+if test "$result" == "0"; then
+	echo initluks.include ran successfully 1&gt;&amp;2
+elif test "$result" != "0"; then
+	echo FATAL ERROR: initluks.include failed to run 1&gt;&amp;2
+	echo " Probably a directory error, exiting..." 1&gt;&amp;2
+	exit 1
+elif test "$result" != "0"; then
+	echo FATAL ERROR: Unknown error trying to run initluks.include, exiting... 1&gt;&amp;2
+	exit 1
+fi
+
+##############################################################################################
+
+#### SAFETY: ABORT ON EMPTY $exe_dir ####
+if test "$exe_dir" == ""; then
+	echo 1&gt;&amp;2
+	echo Error: No exec dir. Run through init script. 1&gt;&amp;2
+	echo 1&gt;&amp;2
+	exit
+fi
+
+#### SAFETY: ABORT IF NO EXECUTABLE make_luks_udf.sh IN CURRENT DIR ####
+if test -e make_luks_udf.sh; then
+	echo -n 1&gt;&amp;2
+else
+	echo 1&gt;&amp;2
+	echo Bad directory `pwd`, investigate!  1&gt;&amp;2
+	echo 1&gt;&amp;2
+	exit 1
+fi
+
+imgloop=""
+imgloop=$1
+
+echo 1&gt;&amp;2
+
+if test "$imgloop" == "dvd" || test "$imgloop" == "blu"; then
+	echo WARNING, arg1 is $imgloop, but it must be a loop device  1&gt;&amp;2
+	echo Continuing the rest of the close  1&gt;&amp;2
+	imgloop=""
+fi
+
+if test "$imgloop" == ""; then
+	echo WARNING, NO IMAGE LOOP ARGUMENT, FIX IT LATER MANUALLY...  1&gt;&amp;2
+fi
+
+echo 1&gt;&amp;2
+
+echo "Unmounting &gt;$udfmountpoint&lt;"  1&gt;&amp;2
+sudo umount $udfmountpoint
+
+echo "cryptsetup luksClosing &gt;$mapperdev&lt;"  1&gt;&amp;2
+sudo cryptsetup luksClose $mapperdev
+
+if test "$imgloop" == ""; then
+	echo 1&gt;&amp;2
+	echo "Your command lacked a loop device to close"  1&gt;&amp;2
+	echo "So you'll need to do it manually, after the fact,"
+	echo "using sudo losetup -d. See the losetup man page."  1&gt;&amp;2
+	echo "The loop device to close should be listed below:"  1&gt;&amp;2
+	sudo losetup -a
+	echo 1&gt;&amp;2
+else
+	echo "losetupping -d &gt;$imgloop&lt;"  1&gt;&amp;2
+	sudo losetup -d $imgloop
+	echo 1&gt;&amp;2
+fi
+
+echo To reopen image file $imgfile, use reopen_luks_udf.sh $disctype  1&gt;&amp;2
+</pre>
+
+<h2><span class="code">reopen_luks_udf.sh</span></h2>
+<p>Usage: <span class="code">./reopen_luks_udf.sh disctype</span> disctype is either <span class="code">blu</span> or <span class="code">dvd</span>.</p>
+<p>This script opens and mounts an already formatted and prepared LUKS-&gt;UDF
+image file. The script follows:</p>
+
+<pre class="longcode">#!/bin/bash
+
+dirr=`dirname $0`
+cd $dirr
+
+#### SAFETY: ABORT ON FAILED source ./initluks.include ####
+source ./initluks.include
+result=$?
+if test "$result" == "0"; then
+	echo initluks.include ran successfully 1&gt;&amp;2
+elif test "$result" != "0"; then
+	echo FATAL ERROR: initluks.include failed to run 1&gt;&amp;2
+	echo " Probably a directory error, exiting..." 1&gt;&amp;2
+	exit 1
+elif test "$result" != "0"; then
+	echo FATAL ERROR: Unknown error trying to run initluks.include, exiting... 1&gt;&amp;2
+	exit 1
+fi
+
+##############################################################################################
+
+#### SAFETY: ABORT ON EMPTY $exe_dir ####
+if test "$exe_dir" == ""; then
+	echo 1&gt;&amp;2
+	echo Error: No exec dir. Run through init script. 1&gt;&amp;2
+	echo 1&gt;&amp;2
+	exit
+fi
+
+#### SAFETY: ABORT IF NO EXECUTABLE make_luks_udf.sh IN CURRENT DIR ####
+if test -x ./make_luks_udf.sh; then
+	echo -n 1&gt;&amp;2
+else
+	echo 1&gt;&amp;2
+	echo Bad directory `pwd`, investigate!  1&gt;&amp;2
+	echo 1&gt;&amp;2
+	exit 1
+fi
+
+
+imgloop=`sudo losetup -f`
+result=$?
+if test "$result" != 0; then
+	echo FATAL ERROR, losetup -f failed with return code $result, aborting. 1&gt;&amp;2
+	exit 1
+fi
+
+echo Doing losetup to loop $imgloop, file $imgfile 1&gt;&amp;2
+sudo losetup $imgloop $imgfile
+
+
+echo Doing cryptsetup luksOpen on loop $imgloop, as $mappername 1&gt;&amp;2
+sudo cryptsetup luksOpen $imgloop $mappername
+
+echo Mounting $mapperdev to $udfmountpoint 1&gt;&amp;2
+sudo mount $mapperdev $udfmountpoint
+
+echo Chowning slitt.slitt $udfmountpoint 1&gt;&amp;2
+sudo /d/exe_symlinks/chown.sh slitt.slitt $udfmountpoint
+
+echo 1&gt;&amp;2
+echo Encrypted loop device is REOPENED at $mapperdev or $imgfloop. 1&gt;&amp;2
+echo 1&gt;&amp;2
+
+echo Write files to $udfmountpoint 1&gt;&amp;2
+echo BE SURE TO UNDO THIS STUFF WITH close_luks_udf.sh $imgloop $disctype 1&gt;&amp;2
+##############################################################################################
+</pre>
+
+<p>As you can see from the preceding, <span class="code">reopen_luks_udf.sh</span>
+does all the same tasks as <span class="code">make_luks_udf.sh</span> except for the
+formatting. Which of course makes <span class="code">reopen_luks_udf.sh</span> less 
+dangerous than <span class="code">make_luks_udf.sh</span>. With both scripts, you
+close out the LUKS-&gt;UDF with <span class="code">close_luks_udf.sh</span></p>
+
+<h2><span class="code">md5check.sh</span></h2>
+<p>Usage: <span class="code">./md5check directory</span>. If you're already in the
+directory with the .tgz's to compare with their .md5's, you can run it without
+an argument. This script has no need of a disctype argument.</p>
+
+<p>This script loops through every .tgz file in the directory. If there's a same-named .md5
+file, it compares the md5sum of the .tgz with the contents of the .md5 to see if they
+match. If they match, it's a success. If they don't match, it's a failure. If there's no
+matching .md5, it's reported as "not checked". It prints out the successes, failures and nochecks
+ on the
+screen, makes log files of the successes, failures and nochecks in the /tmp directory,
+and prints out a final report with the number of successes, failures, and nochecks.</p>
+
+<p>This script can be used years after recording a disc to see whether the .tgz is still
+good. It does <em>not</em> check the .tgz's against the files that created them. <em>That</em>
+script is beyond the scope of this magazine issue.</p>
+
+<p>The code for <span class="code">md5check.sh</span> follows:</p>
+
+<pre class="longcode">#!/bin/bash
+
+
+md5fileresult=/tmp/md5file.jnk
+md5sumresult=/tmp/md5sum.jnk
+successlog=/tmp/md5success.log
+failurelog=/tmp/md5failure.log
+nochecklog=/tmp/md5nocheck.log
+rm -f $successlog
+rm -f $failurelog
+rm -f $nochecklog
+
+let errors=0
+
+if ! test "$1" == ""; then
+	cd $1
+fi
+
+let successes=0
+let failures=0
+let nochecks=0
+let totalfiles=0
+for tgzname in *.tgz; do
+	if ! test -e "$tgzname"; then
+		echo "No .tgz files to process"
+		echo "Check directory `pwd`."
+		exit 1
+	fi
+	md5name=$tgzname
+	md5name=`basename $tgzname .tgz`
+	md5name=$md5name.md5
+	let totalfiles=$totalfiles+1
+	echo 
+
+	if test -f $md5name; then
+		cat $md5name | sed -e "s/[[:space:]].*//" &gt; $md5fileresult
+		echo -n `cat $md5fileresult`
+		echo  "  &lt;==$md5name"
+
+		md5sum $tgzname | sed -e "s/[[:space:]].*//" &gt; $md5sumresult
+		echo -n `cat $md5sumresult`
+		echo -n "  &lt;==$tgzname, "
+
+		if diff -q $md5sumresult $md5fileresult &gt; /dev/null; then
+			let successes=$successes+1
+			echo -n `cat $md5sumresult`    &gt;&gt; $successlog
+			echo -n "  &lt;==$tgzname " &gt;&gt; $successlog
+			echo "  passed. `date +'%Y%m%d_%H:%M:%S'`"     &gt;&gt; $successlog
+			echo &gt;&gt; $successlog
+			echo "  passed."
+		else
+			echo "MISMATCH MISMATCH MISMATCH!"
+			echo "ERROR, file mismatch!"
+			let failures=$failures+1
+			echo -n `cat $md5fileresult`     &gt;&gt; $failurelog
+			echo    "  &lt;==$md5name"          &gt;&gt; $failurelog
+			echo -n `cat $md5sumresult`      &gt;&gt; $failurelog
+			echo -n "  &lt;==$tgzname"          &gt;&gt; $failurelog
+			echo "  FAILED! `date +'%Y%m%d_%H:%M:%S'`"     &gt;&gt; $failurelog
+			echo &gt;&gt; $failurelog
+		fi	
+	else
+		let nochecks=$nochecks+1
+		echo -n `cat $md5sumresult`    &gt;&gt; $nochecklog
+		echo -n "  &lt;==$tgzname" &gt;&gt; $nochecklog
+		echo "  not checked. `date +'%Y%m%d_%H:%M:%S'`"     &gt;&gt; $nochecklog
+		echo &gt;&gt; $nochecklog
+		echo -n `cat $md5sumresult`
+		echo -n "  &lt;==$tgzname, "
+		echo "  not checked (no .md5?)."
+
+	fi	
+done
+
+let tott=$successes+$failures+$nochecks
+if test "$tott" == "0"; then
+	echo ERROR: No files checked!
+elif test "$successes" == "0"; then
+	echo ALL FILES FAILED! See $failurelog
+elif test "$failures" == "0"; then
+	echo "All files passed, see $successlog"
+else
+	echo SOME FILES FAILED! See $failurelog and $successlog
+fi
+
+echo
+echo $successes files passed, $failures files failed, $nochecks files not checked, $tott files processed.
+echo
+</pre>
+
+<h2><span class="code">burn_disc.sh</span></h2>
+<p>Usage: <span class="code">./burn_disc disctype</span>, where
+disctype is either <span class="code">blu</span> or <span class="code">dvd</span>.</p>
+
+<p>This script pretty much just lays down the image file on the disc. The code follows:</p>
+
+<pre class="longcode">#!/bin/bash
+
+source initluks.include
+result=$?
+
+if test "$result" == "0"; then
+	echo initluks.include ran successfully 1&gt;&amp;2
+elif test "$result" != "0"; then
+	echo FATAL ERROR: initluks.include failed to run 1&gt;&amp;2
+	echo " Probably a directory error, exiting..." 1&gt;&amp;2
+	exit 1
+elif test "$result" != "0"; then
+	echo FATAL ERROR: Unknown error trying to run initluks.include, exiting... 1&gt;&amp;2
+	exit 1
+fi
+
+eject -t $discdev
+
+go_on=true
+pat="^[[:space:]]*has[[:space:]]\+media:[[:space:]]\+1"
+echo "Waiting for disc to completely load..."
+while $go_on; do
+	if udisks --show-info $discdev | grep -q $pat &gt; /dev/null; then
+		go_on=false
+	fi
+	echo -n "*"
+	sleep 1
+done
+growisofs -dvd-compat -Z $discdev=$imgfile
+</pre>
+
+<h2><span class="code">open_luks_disc.sh</span></h2>
+<p>Usage: <span class="code">./open_luks_disc.sh disctype</span>, where
+disctype is either <span class="code">blu</span> or <span class="code">dvd</span>.</p>
+
+<p>The way this script works, you insert an already created LUKS-&gt;UDF backup disc,
+and the script mounts it at a mountpoint  defined in
+<span class="code">initluks.include</span> and tells you that mountpoint. When you insert
+the disc, you don't even need to close the tray: It closes the tray for you. The code follows:</p>
+
+<pre class="longcode">#!/bin/bash
+
+source initluks.include
+result=$?
+
+if test "$result" == "0"; then
+	echo initluks.include ran successfully 1&gt;&amp;2
+elif test "$result" != "0"; then
+	echo FATAL ERROR: initluks.include failed to run 1&gt;&amp;2
+	echo " Probably a directory error, exiting..." 1&gt;&amp;2
+	exit 1
+elif test "$result" != "0"; then
+	echo FATAL ERROR: Unknown error trying to run initluks.include, exiting... 1&gt;&amp;2
+	exit 1
+fi
+
+eject -t $discdev
+
+
+go_on=true
+pat="^[[:space:]]*has[[:space:]]\+media:[[:space:]]\+1"
+echo "Waiting for disc to completely load..."
+while $go_on; do
+	if udisks --show-info $discdev | grep $pat &gt; /dev/null; then
+		go_on=false
+	fi
+	echo -n "*"
+	sleep 1
+done
+echo
+
+go_on=true
+pat="^Cipher[[:space:]]\+name:[[:space:]]\+[^[:space:]]"
+echo "Waiting for LUKS filesystem to register..."
+while $go_on; do
+	if sudo cryptsetup luksDump $discdev | grep $pat &gt; /dev/null; then
+		go_on=false
+	fi
+	echo -n "*"
+	sleep 1
+done
+echo
+
+
+command="sudo cryptsetup luksOpen $discdev $discmappername"
+echo About to $command
+$command
+echo
+
+command="sudo mount $discmapperdev $disc_mountpoint"
+echo About to $command
+$command
+echo
+echo
+echo Read files from $disc_mountpoint
+echo Undo with close_luks_disc.sh
+echo
+</pre>
+
+
+
+<h2><span class="code">close_luks_disc.sh</span></h2>
+<p>Usage: <span class="code">./close_luks_disc.sh disctype</span></p>
+
+<p>This script unmounts and ejects the disc, getting rid of the mapper device.</p>
+
+<pre class="longcode">#!/bin/bash
+
+source initluks.include
+result=$?
+
+if test "$result" == "0"; then
+	echo initluks.include ran successfully 1&gt;&amp;2
+elif test "$result" != "0"; then
+	echo FATAL ERROR: initluks.include failed to run 1&gt;&amp;2
+	echo " Probably a directory error, exiting..." 1&gt;&amp;2
+	exit 1
+elif test "$result" != "0"; then
+	echo FATAL ERROR: Unknown error trying to run initluks.include, exiting... 1&gt;&amp;2
+	exit 1
+fi
+
+command="sudo umount $disc_mountpoint"
+echo About to $command
+$command
+echo
+
+command="sudo cryptsetup luksClose $discmappername"
+echo About to $command
+$command
+echo
+
+command="eject $discdev"
+echo About to $command
+$command
+echo
+</pre>
+
+
+<p class="endline">Steve Litt is the author of <a href="http://www.troubleshooters.com/bookstore/rl21.htm">Rapid Learning for the 21st Century</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+
+
+
+
+<!-- =================  H1 HERE! ================= -->
+<h1 id="summary">Summary</h1>
+<p class="byline">By Steve Litt</p>
+<p>Large optical discs such as Blu-rays and dvds are an essential part of a backup
+strategy, especially for irreplaceable files and especially for offsite backup. These
+discs should always be encrypted so as to prevent someone who gains physical access
+of the disc from obtaining your personal information. An excellent way to encrypt
+such discs is the format discussed in this magazine issue, Linux Unified Key Setup (LUKS).
+Secure if used right, easy to use, and reasonably secure.</p>
+
+<p>This magazine issue discusses LUKS basics, and suggests scripts, which after you
+modify them to fit your particular system, are excellent ways to automate LUKS encrypted
+Blu-rays or dvds.</p>
+
+<p>This magazine issue also discusses how to add a bank safe deposit box to your backup
+system in order to hold the few unencrypted discs you need in case you forget a password
+or some other decryption problem occurs.</p>
+
+
+<p class="endline">Steve Litt is the originator of the <a href="http://www.troubleshooters.com/tuni.htm">Universal Troubleshooting Process</a>. Steve can be reached at <a href="http://www.troubleshooters.com/email_steve_litt.htm">his email address</a>.</p>
+
+<!-- 
+<div class="danger" >
+<p class="title">Danger Will Robinson!</p>
+<p>Using Windows the wrong way is very dangerous. You can easily get a virus that can turn your computer into a zombie slave in some criminals bot army. You must constantly perform due diligence to see that this doesn't happen.</p>
+<p>Alternatively, you can use Linux to lessen security concerns. There are much fewer viruses made to infect Linux machines, and the Linux security model is harder to defeat.</p>
+
+</div>
+ -->
+
+
+</body></html>

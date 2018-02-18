@@ -1,0 +1,3 @@
+# sudo umount /mnt/udf
+# sudo cryptsetup luksClose mybluray
+# sudo losetup -d /dev/loop0
